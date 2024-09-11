@@ -27,5 +27,12 @@ export default defineConfig((env) => {
         plugins: [require("tailwindcss"), require("autoprefixer")],
       },
     },
+    assetsInclude: [
+      "**/*.png",
+      "**/*.jpg",
+      "**/*.jpeg",
+      "**/*.gif",
+      "**/*.svg",
+    ],
   } as UserConfig;
 });
