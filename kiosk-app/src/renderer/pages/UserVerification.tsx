@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UserVerification = () => {
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-200">
+    <div>
       <h1 className="text-3xl font-bold">인증해주세요</h1>
     </div>
   );
