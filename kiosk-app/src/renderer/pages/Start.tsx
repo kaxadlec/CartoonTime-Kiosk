@@ -7,7 +7,7 @@ import phoneFrontIcon from "../assets/images/png/phone-front-icon.png";
 
 const Start: React.FC = () => {
   return (
-    <div className="flex flex-col justify-between items-center h-screen bg-kioskBackground">
+    <>
       <div className="flex flex-col items-center mb-[6vh]">
         <div className="flex flex-col items-center mb-[4vh]">
           <h1 className="text-[11vw] font-medium text-center mt-[2vh] mb-[0.1vh] font-kaushan tracking-wide">
@@ -88,7 +88,7 @@ const Start: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
