@@ -6,6 +6,7 @@ import Start from "./pages/Start";
 import UserVerification from "./pages/UserVerification";
 import RecommendationLoading from "./pages/RecommendationLoading";
 import CartoonRecommendation from "./pages/CartoonRecommendation";
+import CartoonDetails from "./pages/CartoonDetails";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
             path="/cartoon-recommendation"
             element={<CartoonRecommendation />}
           />
+          <Route path="/cartoon-details/:id" element={<CartoonDetails />} />
         </Routes>
       </Layout>
     </Router>
