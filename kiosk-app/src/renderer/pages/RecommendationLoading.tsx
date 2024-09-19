@@ -7,10 +7,14 @@ import HomeButton from "../components/HomeButton";
 const RecommendationLoading: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleClick = () => {
+    navigate("/cartoon-recommendation");
+  };
+
   return (
     <div>
       <Title />
-      <div>
+      <div onClick={handleClick}>
         <div className="self-stretch p-[0.13vw] flex flex-col justify-center items-center mt-[1vh]">
           <div className="text-center text-black text-[4vw] font-bold  font-noto tracking-normal mb-[1.6vh]">
             오현진님 안녕하세요!
