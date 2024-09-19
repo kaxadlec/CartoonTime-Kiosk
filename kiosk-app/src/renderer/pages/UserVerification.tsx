@@ -13,9 +13,9 @@ const UserVerification = () => {
   };
 
   return (
-    <div onClick={handleClick}>
+    <div>
       <Title /> {/* Title 컴포넌트 사용 */}
-      <div className="mt-[1vh] mb-[10vh]">
+      <div className="mt-[1vh] mb-[10vh]" onClick={handleClick}>
         {/* 상단 문구 */}
         <div className="w-full flex flex-col justify-start items-start gap-[3vw]">
           <div className="self-stretch p-[0.13vw] flex justify-center items-center">
