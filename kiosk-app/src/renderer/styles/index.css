@@ -6,4 +6,32 @@
 @tailwind components;
 @tailwind utilities;
 
-/*추가적인 커스텀 스타일을 작성*/
+/*추가적인 커스텀 스타일*/
+
+/* 원형으로 돌아가는 로딩 애니메이션 */
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: rotate 2s linear infinite; /* 회전 속도를 적당히 유지 */
+}
+
+.loading-spinner circle {
+  stroke: #f9b812;
+  stroke-linecap: round;
+  animation: dash 1.6s ease-in-out infinite; /* 애니메이션 시간은 그대로 */
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 150, 300; /* dash 크기를 일정하게 유지 */
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dasharray: 150, 300; /* dash 크기 변경 없이 유지 */
+    stroke-dashoffset: -450; /* 선이 부드럽게 이어지도록 offset만 변경 */
+  }
+}
