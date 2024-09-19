@@ -6,8 +6,14 @@ import HomeButton from "../components/HomeButton";
 import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
 
 const UserVerification = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/recommendation-loading");
+  };
+
   return (
-    <div>
+    <div onClick={handleClick}>
       <Title /> {/* Title 컴포넌트 사용 */}
       <div className="mt-[1vh] mb-[10vh]">
         {/* 상단 문구 */}
