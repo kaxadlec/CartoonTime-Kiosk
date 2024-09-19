@@ -21,24 +21,24 @@ const CartoonRecommendation: React.FC = () => {
     const dummyRecommendations: Cartoon[] = [
       {
         id: 1,
-        title: "원피스",
-        author: "오다 에이치로",
+        title: "주술회전",
+        author: "작가1",
         genre: "모험",
-        imageUrl: "/path/to/onepiece.jpg",
+        imageUrl: "../assets/images/jpg/sample1.jpg",
       },
       {
         id: 2,
-        title: "나루토",
-        author: "키시모토 마사시",
-        genre: "액션",
-        imageUrl: "/path/to/naruto.jpg",
+        title: "하이큐",
+        author: "작가2",
+        genre: "장르2",
+        imageUrl: "../assets/images/jpg/sample2.jpg",
       },
       {
         id: 3,
         title: "슬램덩크",
         author: "이노우에 타케히코",
         genre: "스포츠",
-        imageUrl: "/path/to/slamdunk.jpg",
+        imageUrl: "../assets/images/jpg/sample3.jpg",
       },
       // 추가 더미 데이터...
     ];
@@ -64,7 +64,7 @@ const CartoonRecommendation: React.FC = () => {
               <img
                 src={cartoon.imageUrl}
                 alt={cartoon.title}
-                className="w-full h-40 object-cover mb-2 rounded"
+                className="w-full h-80 object-cover mb-2 rounded"
               />
               <h3 className="text-lg font-semibold">{cartoon.title}</h3>
               <p className="text-sm text-gray-600">{cartoon.author}</p>
