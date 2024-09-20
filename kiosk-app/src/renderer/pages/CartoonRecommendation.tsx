@@ -2,58 +2,28 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
-
-interface Cartoon {
-  id: number;
-  title: string;
-  author: string;
-  genre: string;
-  imageUrl: string;
-}
+import { dummyRecommendations } from "../data/dummyRecommendations";
+import { Cartoon } from "../types/cartoon";
+import { MdLocationOn } from "react-icons/md";
 
 const CartoonRecommendation: React.FC = () => {
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<Cartoon[]>([]);
   const [activeTab, setActiveTab] = useState<string>("user");
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [selectedCartoonId, setSelectedCartoonId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
-    // 여기서 실제 API 호출을 통해 추천 만화 목록을 가져와야 합니다.
-    // 지금은 더미 데이터를 사용합니다.
-    const dummyRecommendations: Cartoon[] = [
-      {
-        id: 1,
-        title: "주술회전",
-        author: "작가1",
-        genre: "모험",
-        imageUrl: "../assets/images/jpg/sample1.jpg",
-      },
-      {
-        id: 2,
-        title: "하이큐",
-        author: "작가2",
-        genre: "장르2",
-        imageUrl: "../assets/images/jpg/sample2.jpg",
-      },
-      {
-        id: 3,
-        title: "슬램덩크",
-        author: "이노우에 타케히코",
-        genre: "스포츠",
-        imageUrl: "../assets/images/jpg/sample3.jpg",
-      },
-      {
-        id: 4,
-        title: "괴수 8호",
-        author: "작가4",
-        genre: "장르4",
-        imageUrl: "../assets/images/jpg/sample4.jpg",
-      },
-    ];
+    // 실제 API 호출 대신 더미 데이터를 사용
     setRecommendations(dummyRecommendations);
   }, []);
 
-  const handleCartoonClick = (id: number) => {
-    navigate(`/cartoon-details/${id}`);
+  const handleCartoonClick = (id: number, section: string) => {
+    setSelectedSection(section);
+    setSelectedCartoonId(id);
+    // navigate(`/cartoon-details/${id}`);  // 필요하다면 이 부분을 주석 해제하세요
   };
 
   const getActiveTabTitle = () => {
@@ -166,6 +136,11 @@ const CartoonRecommendation: React.FC = () => {
                     <div className="transform rotate-90 text-center text-black text-[2vh] font-bold font-noto">
                       {letter}
                     </div>
+                    {selectedSection === letter && (
+                      <div className="absolute inset-0 flex items-center justify-end">
+                        <MdLocationOn className="w-[3.4vh] h-[3.4vh] text-red-600 animate-pulse rotate-90" />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -191,11 +166,16 @@ const CartoonRecommendation: React.FC = () => {
       </div>
 
       {/* 만화 목록 */}
-      <div className="flex justify-center items-center gap-[2vw] mt-[3vh] ">
+      <div className="flex justify-center items-center gap-[2.6vw] mt-[4vh] flex-wrap">
         {recommendations.slice(0, 4).map((cartoon) => (
           <div
             key={cartoon.id}
-            className="flex-col justify-center items-center gap-[2vh] flex w-[20vw]"
+            className={`flex-col justify-center items-center gap-[2vh] flex w-[20vw] cursor-pointer rounded-[1vw] p-[1vw] shadow-md transition-shadow duration-300 ${
+              selectedCartoonId === cartoon.id
+                ? "border-[0.4vw] border-[#f9b812]"
+                : "border border-gray-300"
+            }`}
+            onClick={() => handleCartoonClick(cartoon.id, cartoon.section)}
           >
             <div className="w-full aspect-[6/9] relative overflow-hidden">
               <img
