@@ -1,20 +1,9 @@
-// atoms.ts
-import { atom } from "recoil";
+// store/atoms.ts
 
-export interface User {
-  userId: number;
-  userName: string;
-  entryDate: string;
-  exitDate: string | null;
-  fee: number | null;
-}
+import { atom } from "recoil";
+import { User } from "../types/user";
 
 export const userState = atom<User | null>({
   key: "userState",
   default: null,
-});
-
-export const isVerifyingState = atom<boolean>({
-  key: "isVerifyingState",
-  default: false,
 });

@@ -7,7 +7,7 @@ const API_BASE_URL = "https://your-api-base-url.com";
 export const getEntries = async (userId: number) => {
   try {
     const response = await axios.get(
-      `${API_BASE_URL}/api/entries/all/${userId}`
+      `${API_BASE_URL}/ct/entries/all/${userId}`
     );
     return response.data;
   } catch (error) {
@@ -15,3 +15,23 @@ export const getEntries = async (userId: number) => {
     throw error;
   }
 };
+
+// {
+//   "success": true,
+//   "message": "입퇴실 기록 조회에 성공했습니다.",
+//   "data": [
+//       {
+//           "userId": 1,
+//           "entryDate": "2024-09-10T10:48:27.588837",
+//           "exitDate": "2024-09-10T10:48:32.835407",
+//           "fee": 50 // 금액
+//       },
+//       {
+//           "userId": 1,
+//           "entryDate": "2024-09-10T10:48:37.376652",
+//           "exitDate": "2024-09-10T10:48:39.466967",
+//           "fee": 50
+//       }
+//   ],
+//   "error": null
+// }

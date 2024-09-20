@@ -4,9 +4,12 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import Start from "./pages/Start";
 import UserVerification from "./pages/UserVerification";
-import RecommendationLoading from "./pages/RecommendationLoading";
+import EnterProcess from "./pages/EnterProcess";
 import CartoonRecommendation from "./pages/CartoonRecommendation";
 import CartoonDetails from "./pages/CartoonDetails";
+import ExitProcess from "./pages/ExitProcess";
+import ExitSuccess from "./pages/ExitSuccess";
+import ExitFailure from "./pages/ExitFailure";
 
 const App = () => {
   return (
@@ -15,15 +18,14 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Start />} />
           <Route path="/user-verification" element={<UserVerification />} />
-          <Route
-            path="/recommendation-loading"
-            element={<RecommendationLoading />}
-          />
+          <Route path="/enter-loading" element={<EnterProcess />} />
           <Route
             path="/cartoon-recommendation"
             element={<CartoonRecommendation />}
           />
-          <Route path="/cartoon-details/:id" element={<CartoonDetails />} />
+          <Route path="/exit-loading" element={<ExitProcess />} />
+          <Route path="/exit-success" element={<ExitSuccess />} />
+          <Route path="/exit-failure" element={<ExitFailure />} />
         </Routes>
       </Layout>
     </Router>

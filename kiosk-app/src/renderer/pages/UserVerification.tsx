@@ -8,14 +8,18 @@ import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
 const UserVerification = () => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/recommendation-loading");
+  const handleEnter = () => {
+    navigate("/enter-loading");
+  };
+
+  const handleExit = () => {
+    navigate("/exit-loading");
   };
 
   return (
     <div>
       <Title /> {/* Title 컴포넌트 사용 */}
-      <div className="mt-[1vh] mb-[10vh]" onClick={handleClick}>
+      <div className="mt-[1vh] mb-[10vh]">
         {/* 상단 문구 */}
         <div className="w-full flex flex-col justify-start items-start gap-[3vw]">
           <div className="self-stretch p-[0.13vw] flex justify-center items-center">
@@ -60,6 +64,22 @@ const UserVerification = () => {
             </span>
             <span className="text-black">를 제공합니다.</span>
           </div>
+        </div>
+
+        {/* 입실/퇴실 버튼 */}
+        <div className="w-full flex justify-center items-center gap-[5vw] mt-[5vh]">
+          <button
+            onClick={handleEnter}
+            className="px-[5vw] py-[2vh] bg-[#f9b812] rounded-[2vw] text-white text-[4vw] font-bold font-noto"
+          >
+            입실임시버튼
+          </button>
+          <button
+            onClick={handleExit}
+            className="px-[5vw] py-[2vh] bg-[#f9b812] rounded-[2vw] text-white text-[4vw] font-bold font-noto"
+          >
+            퇴실임시버튼
+          </button>
         </div>
       </div>
       <HomeButton />
