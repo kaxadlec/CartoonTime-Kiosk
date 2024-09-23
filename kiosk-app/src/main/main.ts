@@ -1,5 +1,11 @@
+// main/main.ts 파일은 Electron의 메인 프로세스로 사용
+
 import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
+import dotenv from "dotenv";
+
+// .env 파일 로드
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 // Windows에서 설치/제거 시 바로가기를 생성/제거하는 것을 처리
 if (require("electron-squirrel-startup")) {
@@ -13,8 +19,20 @@ const createWindow = () => {
     height: 1920,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
+
+  // API_BASE_URL을 렌더러 프로세스에 전달
+  mainWindow.webContents.on("did-finish-load", () => {
+    mainWindow.webContents.send("update-env", {
+      API_BASE_URL: process.env.API_BASE_URL,
+    });
+  });
+
+  // 환경 변수 확인을 위한 로그
+  console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
 
   // 그리고 앱의 index.html을 로드
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {

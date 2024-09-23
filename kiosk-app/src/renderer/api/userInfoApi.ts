@@ -1,22 +1,22 @@
 import axios from "axios";
 
-// 환경 변수를 통해 mock 데이터 사용 여부 결정
-const useMock = true;
-const API_BASE_URL = "https://your-api-base-url.com";
-
 // 유저 정보를 조회하는 함수 (실제 API 또는 mock 데이터)
-export const getUserInfo = async (userId: number) => {
+export const getUserInfo = async (userId: number, API_BASE_URL: string) => {
+  // 환경 변수를 통해 mock 데이터 사용 여부 결정
+  const useMock = false;
+
   if (useMock) {
     return mockGetUserInfo(userId); // mock 데이터를 사용
   }
-  return realGetUserInfo(userId); // 실제 API 요청
+  return realGetUserInfo(userId, API_BASE_URL); // 실제 API 요청
 };
 
 // 실제 API 유저 정보 조회 함수
-export const realGetUserInfo = async (userId: number) => {
+export const realGetUserInfo = async (userId: number, API_BASE_URL: string) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/ct/user/${userId}`);
-
+    console.log(API_BASE_URL);
+    console.log("여기 response 모르겠어요", response);
     // 응답 성공 시 처리
     return {
       success: true,

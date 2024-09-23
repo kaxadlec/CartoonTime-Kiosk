@@ -1,8 +1,8 @@
 // UserVerification.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { userState } from "../store/atoms";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { userState, apiBaseUrlState } from "../store/atoms";
 import { getUserIdFromUWB } from "../utils/uwbUtils";
 
 import { getEntryExitLog } from "../api/entryExitLogApi";
@@ -14,10 +14,15 @@ import HomeButton from "../components/HomeButton";
 import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
 
 const UserVerification = () => {
-  const navigate = useNavigate();
-  const setUserState = useSetRecoilState(userState);
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate(); // 페이지 이동 함수
+  const setUserState = useSetRecoilState(userState); // 사용자 상태 상태
+  const API_BASE_URL = useRecoilValue(apiBaseUrlState); // API_BASE_URL 상태
+  const [isLoading, setIsLoading] = useState(false); // 로딩 중 여부
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log("유저인증페이지에서 API_BASE_URL:", API_BASE_URL);
+  }, [API_BASE_URL]);
 
   const handleEnter = async () => {
     setIsLoading(true); // 로딩 중임을 표시
@@ -28,8 +33,7 @@ const UserVerification = () => {
       let userId: number; // 사용자 ID
       try {
         userId = await getUserIdFromUWB();
-        console.log("UWB로부터 사용자 ID를 가져왔습니다.");
-        console.log("userId:", userId);
+        console.log(`UWB로부터 사용자 ID ${userId}를 가져왔습니다.`);
       } catch (uwbError) {
         throw new Error("UWB로부터 사용자 ID를 가져오는데 실패했습니다.");
       }
@@ -37,7 +41,7 @@ const UserVerification = () => {
       // 사용자 정보 조회
       let userInfoResponse;
       try {
-        userInfoResponse = await getUserInfo(userId);
+        userInfoResponse = await getUserInfo(userId, API_BASE_URL);
         console.log("사용자 정보 조회 결과:", userInfoResponse);
         if (!userInfoResponse.success) {
           throw new Error(userInfoResponse.message || "사용자 정보 조회 실패");
@@ -50,7 +54,7 @@ const UserVerification = () => {
       let entryExitLogResponse;
       try {
         // 입퇴실 기록 조회
-        entryExitLogResponse = await getEntryExitLog(userId);
+        entryExitLogResponse = await getEntryExitLog(userId, API_BASE_URL);
         console.log("입퇴실 기록 조회 결과:", entryExitLogResponse);
         if (!entryExitLogResponse.success) {
           throw new Error(
@@ -72,11 +76,11 @@ const UserVerification = () => {
         // 마지막 입퇴실 기록이 없거나 퇴실 처리되었을 경우 입실 처리
         if (!lastLog || lastLog.exitDate !== null) {
           // 입실 처리
-          result = await postEntry(userId);
+          result = await postEntry(userId, API_BASE_URL);
           isCurrentlyCheckedIn = true;
         } else {
           // 퇴실 처리
-          result = await postExit(userId);
+          result = await postExit(userId, API_BASE_URL);
           isCurrentlyCheckedIn = false;
         }
         console.log("입/퇴실 처리 결과:", result);

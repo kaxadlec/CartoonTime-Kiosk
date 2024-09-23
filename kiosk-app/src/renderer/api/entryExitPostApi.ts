@@ -1,26 +1,25 @@
 import axios from "axios";
 
-const useMock = true;
-const API_BASE_URL = "https://your-api-base-url.com";
+const useMock = false;
 
 // 입실 처리 함수 (실제 API 또는 mock 데이터)
-export const postEntry = async (userId: number) => {
+export const postEntry = async (userId: number, API_BASE_URL: string) => {
   if (useMock) {
     return mockEntry(userId);
   }
-  return realEntry(userId);
+  return realEntry(userId, API_BASE_URL);
 };
 
 // 퇴실 처리 함수 (실제 API 또는 mock 데이터)
-export const postExit = async (userId: number) => {
+export const postExit = async (userId: number, API_BASE_URL: string) => {
   if (useMock) {
     return mockExit(userId);
   }
-  return realExit(userId);
+  return realExit(userId, API_BASE_URL);
 };
 
 // 실제 입실 처리 함수
-export const realEntry = async (userId: number) => {
+export const realEntry = async (userId: number, API_BASE_URL: string) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/api/entry/${userId}`);
     return response.data;
@@ -31,7 +30,7 @@ export const realEntry = async (userId: number) => {
 };
 
 // 실제 퇴실 처리 함수
-export const realExit = async (userId: number) => {
+export const realExit = async (userId: number, API_BASE_URL: string) => {
   try {
     const response = await axios.put(
       `${API_BASE_URL}/api/entry/${userId}/exit`

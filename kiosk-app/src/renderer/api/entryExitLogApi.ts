@@ -2,7 +2,7 @@ import { EntryExitLog } from "../types/user";
 import axios from "axios";
 
 // 환경 변수를 통해 mock 데이터 사용 여부 결정
-const useMock = true;
+const useMock = false;
 
 // 모의 데이터 생성 함수
 const generateMockData = (userId: number): EntryExitLog[] => {
@@ -29,11 +29,8 @@ const generateMockData = (userId: number): EntryExitLog[] => {
   ];
 };
 
-// API의 기본 URL 설정
-const API_BASE_URL = "https://your-api-base-url.com";
-
 // 입퇴실 기록을 조회하는 함수
-export const getEntryExitLog = async (userId: number) => {
+export const getEntryExitLog = async (userId: number, API_BASE_URL: string) => {
   if (useMock) {
     return {
       success: true,
