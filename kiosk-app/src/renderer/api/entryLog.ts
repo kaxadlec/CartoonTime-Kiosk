@@ -1,3 +1,5 @@
+// api/entryLog.ts 파일에는 입퇴실 기록을 조회하는 API 함수를 작성합니다.
+
 import axios from "axios";
 
 // API의 기본 URL 설정

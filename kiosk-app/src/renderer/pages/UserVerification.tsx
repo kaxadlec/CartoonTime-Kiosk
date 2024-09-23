@@ -9,7 +9,7 @@ const UserVerification = () => {
   const navigate = useNavigate();
 
   const handleEnter = () => {
-    navigate("/enter-loading");
+    navigate("/user-status");
   };
 
   const handleExit = () => {
