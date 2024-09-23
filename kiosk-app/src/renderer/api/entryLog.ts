@@ -18,6 +18,7 @@ export const getEntries = async (userId: number) => {
   }
 };
 
+// Response 예시
 // {
 //   "success": true,
 //   "message": "입퇴실 기록 조회에 성공했습니다.",

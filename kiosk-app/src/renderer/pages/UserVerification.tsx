@@ -1,15 +1,84 @@
 // UserVerification.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { userState } from "../store/atoms";
+import { getUserIdFromUWB } from "../utils/uwbUtils";
+
+import { getEntries } from "../api/entryLog";
+import { checkIn, checkOut } from "../api/entry";
+
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
 import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
 
 const UserVerification = () => {
   const navigate = useNavigate();
+  const setUserState = useSetRecoilState(userState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleEnter = () => {
-    navigate("/user-status");
+  const handleEnter = async () => {
+    setIsLoading(true); // 로딩 중임을 표시
+    setError(null); // 에러 메시지 초기화
+
+    try {
+      let userId: number; // 사용자 ID
+      try {
+        // UWB로부터 사용자 ID를 가져옴
+        userId = await getUserIdFromUWB();
+      } catch (uwbError) {
+        throw new Error("UWB로부터 사용자 ID를 가져오는데 실패했습니다.");
+      }
+
+      let entriesResponse; // 입퇴실 기록 조회 응답
+      try {
+        // 입퇴실 기록 조회
+        entriesResponse = await getEntries(userId);
+      } catch (entriesError) {
+        throw new Error("입퇴실 기록 조회에 실패했습니다.");
+      }
+
+      if (!entriesResponse.success) {
+        throw new Error(entriesResponse.message || "입퇴실 기록 조회 실패");
+      }
+
+      // 마지막 입퇴실 기록 조회
+      const lastEntry = entriesResponse.data[entriesResponse.data.length - 1];
+      let result;
+      try {
+        // 마지막 입퇴실 기록이 없거나 퇴실 처리되었을 경우 입실 처리
+        if (!lastEntry || lastEntry.exitDate !== null) {
+          // 입실 처리
+          result = await checkIn(userId);
+        } else {
+          // 퇴실 처리
+          result = await checkOut(userId);
+        }
+      } catch (checkError) {
+        throw new Error("입실 또는 퇴실 처리에 실패했습니다.");
+      }
+
+      // API 호출 결과에 따라 사용자 상태 업데이트
+      setUserState({
+        id: userId,
+        name: result.userName || "",
+        currentMoney: result.currentMoney || null,
+        isCurrentlyCheckedIn: result.isCheckedIn,
+      });
+
+      // 처리 완료 후 다음 페이지로 이동
+      navigate("/user-status");
+    } catch (error) {
+      console.error("입퇴실 처리 중 오류 발생:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "알 수 없는 오류가 발생했습니다."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleExit = () => {
@@ -70,9 +139,11 @@ const UserVerification = () => {
         <div className="w-full flex justify-center items-center gap-[5vw] mt-[5vh]">
           <button
             onClick={handleEnter}
+            disabled={isLoading}
             className="px-[5vw] py-[2vh] bg-[#f9b812] rounded-[2vw] text-white text-[4vw] font-bold font-noto"
           >
-            입실임시버튼
+            {/* 입실임시버튼 */}
+            {isLoading ? "처리 중..." : "입실임시버튼"}
           </button>
           <button
             onClick={handleExit}
@@ -81,6 +152,9 @@ const UserVerification = () => {
             퇴실임시버튼
           </button>
         </div>
+
+        {/* 에러 메시지 표시 */}
+        {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
       </div>
       <HomeButton />
     </div>
