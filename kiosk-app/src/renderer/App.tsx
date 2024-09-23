@@ -18,7 +18,7 @@ const App = () => {
     <RecoilRoot>
       <Router>
         <Layout>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={null}>
             <Routes>
               <Route path="/" element={<Start />} />
               <Route path="/user-verification" element={<UserVerification />} />
