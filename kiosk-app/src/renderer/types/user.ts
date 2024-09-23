@@ -7,16 +7,9 @@ export interface User {
   isCurrentlyCheckedIn: boolean;
 }
 
-export interface EntryRecord {
+export interface EntryExitLog {
   userId: number;
   entryDate: string;
   exitDate: string | null;
   fee: number;
-}
-
-export interface ApiResponse {
-  success: boolean;
-  message: string;
-  data: EntryRecord[];
-  error: string | null;
 }

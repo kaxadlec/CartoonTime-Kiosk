@@ -5,8 +5,9 @@ import { useSetRecoilState } from "recoil";
 import { userState } from "../store/atoms";
 import { getUserIdFromUWB } from "../utils/uwbUtils";
 
-import { getEntries } from "../api/entryLog";
-import { checkIn, checkOut } from "../api/entry";
+import { getEntryExitLog } from "../api/entryExitLogApi";
+import { postEntry, postExit } from "../api/entryExitPostApi";
+import { getUserInfo } from "../api/userInfoApi";
 
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
@@ -23,38 +24,62 @@ const UserVerification = () => {
     setError(null); // 에러 메시지 초기화
 
     try {
+      // UWB로부터 사용자 ID를 가져옴
       let userId: number; // 사용자 ID
       try {
-        // UWB로부터 사용자 ID를 가져옴
         userId = await getUserIdFromUWB();
+        console.log("UWB로부터 사용자 ID를 가져왔습니다.");
+        console.log("userId:", userId);
       } catch (uwbError) {
         throw new Error("UWB로부터 사용자 ID를 가져오는데 실패했습니다.");
       }
 
-      let entriesResponse; // 입퇴실 기록 조회 응답
+      // 사용자 정보 조회
+      let userInfoResponse;
+      try {
+        userInfoResponse = await getUserInfo(userId);
+        console.log("사용자 정보 조회 결과:", userInfoResponse);
+        if (!userInfoResponse.success) {
+          throw new Error(userInfoResponse.message || "사용자 정보 조회 실패");
+        }
+      } catch (userInfoError) {
+        throw new Error("사용자 정보 조회에 실패했습니다.");
+      }
+
+      // 입퇴실 기록 조회
+      let entryExitLogResponse;
       try {
         // 입퇴실 기록 조회
-        entriesResponse = await getEntries(userId);
+        entryExitLogResponse = await getEntryExitLog(userId);
+        console.log("입퇴실 기록 조회 결과:", entryExitLogResponse);
+        if (!entryExitLogResponse.success) {
+          throw new Error(
+            entryExitLogResponse.message || "입퇴실 기록 조회 실패"
+          );
+        }
       } catch (entriesError) {
         throw new Error("입퇴실 기록 조회에 실패했습니다.");
       }
 
-      if (!entriesResponse.success) {
-        throw new Error(entriesResponse.message || "입퇴실 기록 조회 실패");
-      }
-
       // 마지막 입퇴실 기록 조회
-      const lastEntry = entriesResponse.data[entriesResponse.data.length - 1];
+      const lastLog =
+        entryExitLogResponse.data[entryExitLogResponse.data.length - 1];
+      // 현재 입실 상태 확인
+      let isCurrentlyCheckedIn = false;
       let result;
+
       try {
         // 마지막 입퇴실 기록이 없거나 퇴실 처리되었을 경우 입실 처리
-        if (!lastEntry || lastEntry.exitDate !== null) {
+        if (!lastLog || lastLog.exitDate !== null) {
           // 입실 처리
-          result = await checkIn(userId);
+          result = await postEntry(userId);
+          isCurrentlyCheckedIn = true;
         } else {
           // 퇴실 처리
-          result = await checkOut(userId);
+          result = await postExit(userId);
+          isCurrentlyCheckedIn = false;
         }
+        console.log("입/퇴실 처리 결과:", result);
       } catch (checkError) {
         throw new Error("입실 또는 퇴실 처리에 실패했습니다.");
       }
@@ -62,9 +87,9 @@ const UserVerification = () => {
       // API 호출 결과에 따라 사용자 상태 업데이트
       setUserState({
         id: userId,
-        name: result.userName || "",
-        currentMoney: result.currentMoney || null,
-        isCurrentlyCheckedIn: result.isCheckedIn,
+        name: userInfoResponse.data.name,
+        currentMoney: userInfoResponse.data.currentMoney,
+        isCurrentlyCheckedIn: isCurrentlyCheckedIn,
       });
 
       // 처리 완료 후 다음 페이지로 이동
