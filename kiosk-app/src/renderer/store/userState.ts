@@ -4,7 +4,7 @@ import { selector } from "recoil";
 import { userState } from "./atoms";
 
 export const userStatusSelector = selector({
-  key: "userStatusSelector", // 고정된 키 사용
+  key: "userStatusSelector_" + Math.random(), // 고유한 키 값
   get: ({ get }) => {
     const user = get(userState);
     if (!user) {

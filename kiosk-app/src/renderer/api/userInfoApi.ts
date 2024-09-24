@@ -1,29 +1,25 @@
 import axios from "axios";
 
 // 유저 정보를 조회하는 함수 (실제 API 또는 mock 데이터)
-export const getUserInfo = async (userId: number, API_BASE_URL: string) => {
+export const getUserInfo = async (userId: number) => {
   // 환경 변수를 통해 mock 데이터 사용 여부 결정
   const useMock = false;
 
   if (useMock) {
     return mockGetUserInfo(userId); // mock 데이터를 사용
   }
-  return realGetUserInfo(userId, API_BASE_URL); // 실제 API 요청
+  return realGetUserInfo(userId); // 실제 API 요청
 };
 
 // 실제 API 유저 정보 조회 함수
-export const realGetUserInfo = async (userId: number, API_BASE_URL: string) => {
+export const realGetUserInfo = async (userId: number) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/ct/user/${userId}`);
-    console.log(API_BASE_URL);
-    console.log("여기 response 모르겠어요", response);
+    const response = await window.electronAPI.apiRequest({
+      method: "GET",
+      endpoint: `/ct/user/${userId}`,
+    });
     // 응답 성공 시 처리
-    return {
-      success: true,
-      message: response.data.message,
-      data: response.data.data,
-      error: null,
-    };
+    return response;
   } catch (error: any) {
     console.error("유저 정보 조회 실패", error);
 

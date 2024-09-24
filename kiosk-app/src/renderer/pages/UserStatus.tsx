@@ -59,6 +59,7 @@ const UserStatus: React.FC = () => {
       >
         만화 추천 받기
       </button>
+
       <HomeButton />
     </div>
   );

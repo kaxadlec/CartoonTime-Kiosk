@@ -3,26 +3,29 @@ import axios from "axios";
 const useMock = false;
 
 // 입실 처리 함수 (실제 API 또는 mock 데이터)
-export const postEntry = async (userId: number, API_BASE_URL: string) => {
+export const postEntry = async (userId: number) => {
   if (useMock) {
     return mockEntry(userId);
   }
-  return realEntry(userId, API_BASE_URL);
+  return realEntry(userId);
 };
 
 // 퇴실 처리 함수 (실제 API 또는 mock 데이터)
-export const postExit = async (userId: number, API_BASE_URL: string) => {
+export const postExit = async (userId: number) => {
   if (useMock) {
     return mockExit(userId);
   }
-  return realExit(userId, API_BASE_URL);
+  return realExit(userId);
 };
 
 // 실제 입실 처리 함수
-export const realEntry = async (userId: number, API_BASE_URL: string) => {
+export const realEntry = async (userId: number) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/entry/${userId}`);
-    return response.data;
+    const response = await window.electronAPI.apiRequest({
+      method: "POST",
+      endpoint: `/ct/entry/${userId}`,
+    });
+    return response;
   } catch (error) {
     console.error("입실 처리 실패", error);
     throw error;
@@ -30,12 +33,13 @@ export const realEntry = async (userId: number, API_BASE_URL: string) => {
 };
 
 // 실제 퇴실 처리 함수
-export const realExit = async (userId: number, API_BASE_URL: string) => {
+export const realExit = async (userId: number) => {
   try {
-    const response = await axios.put(
-      `${API_BASE_URL}/api/entry/${userId}/exit`
-    );
-    return response.data;
+    const response = await window.electronAPI.apiRequest({
+      method: "POST",
+      endpoint: `/ct/entry/${userId}/exit`,
+    });
+    return response;
   } catch (error) {
     console.error("퇴실 처리 실패", error);
     throw error;

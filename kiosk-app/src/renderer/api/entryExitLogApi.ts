@@ -30,7 +30,7 @@ const generateMockData = (userId: number): EntryExitLog[] => {
 };
 
 // 입퇴실 기록을 조회하는 함수
-export const getEntryExitLog = async (userId: number, API_BASE_URL: string) => {
+export const getEntryExitLog = async (userId: number) => {
   if (useMock) {
     return {
       success: true,
@@ -41,15 +41,11 @@ export const getEntryExitLog = async (userId: number, API_BASE_URL: string) => {
   }
 
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/ct/entries/all/${userId}`
-    );
-    return {
-      success: true,
-      message: "입퇴실 기록 조회에 성공했습니다.",
-      data: response.data,
-      error: null,
-    };
+    const response = await window.electronAPI.apiRequest({
+      method: "GET",
+      endpoint: `/ct/entries/all/${userId}`,
+    });
+    return response;
   } catch (error: any) {
     console.error("입퇴실 기록 조회 실패", error);
     return {

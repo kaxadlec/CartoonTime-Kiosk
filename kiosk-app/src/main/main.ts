@@ -1,8 +1,9 @@
 // main/main.ts 파일은 Electron의 메인 프로세스로 사용
 
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import path from "path";
 import dotenv from "dotenv";
+import axios from "axios";
 
 // .env 파일 로드
 dotenv.config({ path: path.join(__dirname, "../../.env") });
@@ -24,12 +25,12 @@ const createWindow = () => {
     },
   });
 
-  // API_BASE_URL을 렌더러 프로세스에 전달
-  mainWindow.webContents.on("did-finish-load", () => {
-    mainWindow.webContents.send("update-env", {
-      API_BASE_URL: process.env.API_BASE_URL,
-    });
-  });
+  // // API_BASE_URL을 렌더러 프로세스에 전달
+  // mainWindow.webContents.on("did-finish-load", () => {
+  //   mainWindow.webContents.send("update-env", {
+  //     API_BASE_URL: process.env.API_BASE_URL,
+  //   });
+  // });
 
   // 환경 변수 확인을 위한 로그
   console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
@@ -74,3 +75,15 @@ app.on("activate", () => {
 
 // 이 파일에서 앱의 메인 프로세스에 대한 나머지 구체적인 코드를 포함할 수 있습니다.
 // 이 코드를 별도의 파일로 작성한 후 여기에 가져올 수도 있습니다.
+
+// API 요청을 처리하는 IPC 핸들러
+ipcMain.handle("api-request", async (event, { method, endpoint, data }) => {
+  try {
+    const url = `${process.env.API_BASE_URL}${endpoint}`;
+    const response = await axios({ method, url, data });
+    return response.data;
+  } catch (error) {
+    console.error("API request error:", error);
+    throw error;
+  }
+});
