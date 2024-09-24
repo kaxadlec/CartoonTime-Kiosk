@@ -3,58 +3,54 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import HomeButton from "../components/HomeButton";
+import Title from "../components/Title";
 
 const EnterSuccess: React.FC = () => {
   const location = useLocation();
   const user = location.state?.user;
   const navigate = useNavigate();
 
-  const handleEnter = () => {
-    navigate("/recommendation-loading");
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/cartoon-recommendation", { state: { user: user } });
+    }, 4000); // 4초 후 이동
+
+    // 컴포넌트가 언마운트될 때 타이머 정리
+    return () => clearTimeout(timer);
+  }, [navigate, user]);
 
   if (!user) {
-    return <div>Loading user status...</div>;
+    return <div>유저 불러오는 중</div>;
   }
 
   return (
-    <div className="flex justify-center flex-col items-center gap-8 p-6">
-      <h1 className="text-4xl font-bold mb-4">사용자 상태</h1>
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
-        <div className="mb-4">
-          <p className="font-bold text-xl mb-2">사용자 ID:</p>
-          <p className="text-gray-700 text-lg">{user.id}</p>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl mb-2">이름:</p>
-          <p className="text-gray-700 text-lg">{user.name || "이름 없음"}</p>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl mb-2">현재 잔액:</p>
-          <p className="text-gray-700 text-lg">
-            {user.currentMoney !== null
-              ? `${user.currentMoney.toLocaleString()}원`
-              : "정보 없음"}
-          </p>
-        </div>
-        <div className="mb-4">
-          <p className="font-bold text-xl mb-2">입실 상태:</p>
-          <p
-            className={`text-lg ${
-              user.isCurrentlyCheckedIn ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {user.isCurrentlyCheckedIn ? "입실 중" : "퇴실 상태"}
-          </p>
+    <div>
+      <Title />
+      <div>
+        <div className="self-stretch p-[0.13vw] flex flex-col justify-center items-center mt-[1vh]">
+          <div className="text-center text-black text-[5vw] font-bold font-noto tracking-normal mb-[1.6vh]">
+            {`${user.name}님 안녕하세요! 입실이 완료되었습니다.`}
+          </div>
+          <div className="text-center text-black text-[3vw] font-medium font-noto tracking-normal mb-[20vh]">
+            Cartoon Time은 당신에게 <br />
+            고민이 필요없는 휴식시간을 제공합니다.
+          </div>
+          {/* 로딩 애니메이션 */}
+          <div className="mb-[10vh]">
+            <svg
+              className="loading-spinner"
+              width="100"
+              height="100"
+              viewBox="0 0 100 100"
+            >
+              <circle cx="50" cy="50" r="40" fill="none" strokeWidth="10" />
+            </svg>
+          </div>
+          <div className="text-center text-black text-[4.5vw] font-bold font-noto tracking-wide">
+            당신의 취향에 맞는 만화 추천 중입니다.
+          </div>
         </div>
       </div>
-      <button
-        onClick={handleEnter}
-        className="px-[5vw] py-[2vh] bg-[#f9b812] rounded-[2vw] text-white text-[4vw] font-bold font-noto hover:bg-[#e0a610] transition-colors"
-      >
-        만화 추천 받기
-      </button>
-
       <HomeButton />
     </div>
   );

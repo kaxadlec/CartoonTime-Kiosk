@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
 import { dummyRecommendations } from "../data/dummyRecommendations";
@@ -7,6 +7,8 @@ import { Cartoon } from "../types/cartoon";
 import { MdLocationOn } from "react-icons/md";
 
 const CartoonRecommendation: React.FC = () => {
+  const location = useLocation();
+  const user = location.state?.user;
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<Cartoon[]>([]);
   const [activeTab, setActiveTab] = useState<string>("user");
@@ -42,7 +44,7 @@ const CartoonRecommendation: React.FC = () => {
   const getActiveTabSubtitle = () => {
     switch (activeTab) {
       case "user":
-        return "오현진님의 취향을 바탕으로 추천한 만화 리스트입니다.";
+        return `${user.name}님의 취향을 바탕으로 추천한 만화 리스트입니다.`;
       case "bestseller":
         return "현재 가장 인기 있는 만화 리스트입니다.";
       case "today":
