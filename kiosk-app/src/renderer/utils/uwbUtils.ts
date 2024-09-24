@@ -8,6 +8,6 @@ export const getUserIdFromUWB = (): Promise<number> => {
       // const mockUserId = Math.floor(Math.random() * 10) + 1; // 1부터 10 사이의 랜덤 숫자
       const mockUserId = 6; // 테스트를 위해 임시로 6번 사용자 ID를 반환
       resolve(mockUserId);
-    }, 100);
+    }, 3000);
   });
 };

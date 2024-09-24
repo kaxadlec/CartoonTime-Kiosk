@@ -123,27 +123,49 @@ const UserVerification = () => {
             </div>
           </div>
         </div>
-        {/* 안내 문구 */}
-        <div className="w-full mb-[3vw]">
-          <div className="self-stretch p-[0.13vw] flex justify-center items-center">
-            <div className="text-center text-black text-[3.5vw] font-medium font-noto tracking-normal">
-              앱에서 로그인 후<br />
-              키오스크 가까이에서 <br />
-              휴대폰을 뒤집어주세요.
+
+        {isLoading ? (
+          // 입퇴실 처리 중일 때
+          <div className="w-full mb-[3vw] flex flex-col items-center justify-center h-[60vw]">
+            {/* 로딩 애니메이션 */}
+            <div className="mb-[10vh]">
+              <svg
+                className="loading-spinner"
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+              >
+                <circle cx="50" cy="50" r="40" fill="none" strokeWidth="10" />
+              </svg>
+            </div>
+            <div className="text-center text-black text-[4.5vw] font-bold font-noto tracking-wide">
+              잠시만 기다려주세요.
             </div>
           </div>
-        </div>
-
-        {/* 이미지 */}
-        <div className="flex flex-col items-center">
-          <div className="mb-[0.5vh]">
-            <img
-              src={PhoneFrontIcon2}
-              alt="PhoneFrontIcon2"
-              className="w-[50vw] h-auto"
-            />
-          </div>
-        </div>
+        ) : (
+          // 입퇴실 처리 중이 아닐 때
+          <>
+            <div className="w-full mb-[3vw] flex flex-col items-center justify-center h-[60vw]">
+              {/* 안내 문구 */}
+              <div className="self-stretch p-[0.13vw]">
+                <div className="text-center text-black text-[3.5vw] font-medium font-noto tracking-normal">
+                  앱에서 로그인 후<br />
+                  키오스크 가까이에서 <br />
+                  휴대폰을 뒤집어주세요.
+                </div>
+              </div>
+              {/* 이미지 */}
+              <div>
+                <img
+                  src={PhoneFrontIcon2}
+                  alt="PhoneFrontIcon2"
+                  className="w-[50vw] h-auto"
+                />
+              </div>
+            </div>
+            <HomeButton />
+          </>
+        )}
 
         {/* 하단 문구 */}
         <div className="w-full h-[14.79vw] p-[0.13vw] flex justify-center items-center">
@@ -173,14 +195,13 @@ const UserVerification = () => {
             disabled={isLoading}
             className="px-[5vw] py-[2vh] bg-neutral-700 rounded-[2vw] text-white text-[4vw] font-bold font-noto"
           >
-            {isLoading ? "처리 중..." : "UWB 통신 전 임시 입퇴실 버튼"}
+            UWB 통신 전 임시 입퇴실 버튼
           </button>
         </div>
 
         {/* 에러 메시지 표시 */}
         {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
       </div>
-      <HomeButton />
     </div>
   );
 };
