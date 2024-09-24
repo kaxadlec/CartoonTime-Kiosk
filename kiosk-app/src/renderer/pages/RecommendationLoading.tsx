@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
 
-const EnterProcess: React.FC = () => {
+const RecommendationLoading: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -44,4 +44,4 @@ const EnterProcess: React.FC = () => {
   );
 };
 
-export default EnterProcess;
+export default RecommendationLoading;

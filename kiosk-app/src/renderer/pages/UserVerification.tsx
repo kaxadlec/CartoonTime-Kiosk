@@ -1,8 +1,6 @@
 // UserVerification.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { userState } from "../store/atoms";
 import { getUserIdFromUWB } from "../utils/uwbUtils";
 
 import { getEntryExitLog } from "../api/entryExitLogApi";
@@ -15,7 +13,6 @@ import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
 
 const UserVerification = () => {
   const navigate = useNavigate(); // 페이지 이동 함수
-  const setUserState = useSetRecoilState(userState); // 사용자 상태 상태
   const [isLoading, setIsLoading] = useState(false); // 로딩 중 여부
   const [error, setError] = useState<string | null>(null);
 
@@ -85,19 +82,18 @@ const UserVerification = () => {
         throw new Error("입실 또는 퇴실 처리에 실패했습니다.");
       }
 
-      // API 호출 결과에 따라 사용자 상태 업데이트
-      setUserState({
+      const userData = {
         id: userId,
         name: userInfoResponse.data.name,
         currentMoney: userInfoResponse.data.currentMoney,
         isCurrentlyCheckedIn: isCurrentlyCheckedIn,
-      });
+      };
 
       // 입퇴실 상태에 따라 페이지 이동
       if (isCurrentlyCheckedIn) {
-        navigate("/user-status");
+        navigate("/enter-success", { state: { user: userData } });
       } else {
-        navigate("/exit-loading");
+        navigate("/exit-success", { state: { user: userData } });
       }
     } catch (error) {
       console.error("입퇴실 처리 중 오류 발생:", error);

@@ -1,18 +1,16 @@
 // 메인 React 컴포넌트
 import React, { Suspense, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { RecoilRoot } from "recoil";
 
 import Layout from "./components/Layout";
 import Start from "./pages/Start";
 import UserVerification from "./pages/UserVerification";
-import EnterProcess from "./pages/EnterProcess";
+import RecommendationLoading from "./pages/RecommendationLoading";
 import CartoonRecommendation from "./pages/CartoonRecommendation";
-import UserStatus from "./pages/UserStatus";
-import CartoonDetails from "./pages/CartoonDetails";
-import ExitProcess from "./pages/ExitProcess";
+import EnterSuccess from "./pages/EnterSuccess";
 import ExitSuccess from "./pages/ExitSuccess";
 import ExitFailure from "./pages/ExitFailure";
+import CartoonDetails from "./pages/CartoonDetails";
 
 // 전역 타입 선언 추가
 declare global {
@@ -23,7 +21,7 @@ declare global {
   }
 }
 
-const AppContent = () => {
+const App = () => {
   return (
     <Router>
       <Layout>
@@ -31,27 +29,21 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Start />} />
             <Route path="/user-verification" element={<UserVerification />} />
-            <Route path="/enter-loading" element={<EnterProcess />} />
+            <Route
+              path="/recommendation-loading"
+              element={<RecommendationLoading />}
+            />
             <Route
               path="/cartoon-recommendation"
               element={<CartoonRecommendation />}
             />
-            <Route path="/user-status" element={<UserStatus />}></Route>
-            <Route path="/exit-loading" element={<ExitProcess />} />
+            <Route path="/enter-success" element={<EnterSuccess />} />
             <Route path="/exit-success" element={<ExitSuccess />} />
             <Route path="/exit-failure" element={<ExitFailure />} />
           </Routes>
         </Suspense>
       </Layout>
     </Router>
-  );
-};
-
-const App = () => {
-  return (
-    <RecoilRoot>
-      <AppContent />
-    </RecoilRoot>
   );
 };
 

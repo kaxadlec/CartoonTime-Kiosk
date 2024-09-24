@@ -1,20 +1,19 @@
 // components/UserStatus.tsx
 
 import React, { useEffect } from "react";
-import { useRecoilValue } from "recoil";
-import { userStatusSelector } from "../store/userState";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import HomeButton from "../components/HomeButton";
 
-const UserStatus: React.FC = () => {
-  const userStatus = useRecoilValue(userStatusSelector);
+const EnterSuccess: React.FC = () => {
+  const location = useLocation();
+  const user = location.state?.user;
   const navigate = useNavigate();
 
   const handleEnter = () => {
-    navigate("/enter-loading");
+    navigate("/recommendation-loading");
   };
 
-  if (!userStatus) {
+  if (!user) {
     return <div>Loading user status...</div>;
   }
 
@@ -24,19 +23,17 @@ const UserStatus: React.FC = () => {
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
         <div className="mb-4">
           <p className="font-bold text-xl mb-2">사용자 ID:</p>
-          <p className="text-gray-700 text-lg">{userStatus.id}</p>
+          <p className="text-gray-700 text-lg">{user.id}</p>
         </div>
         <div className="mb-4">
           <p className="font-bold text-xl mb-2">이름:</p>
-          <p className="text-gray-700 text-lg">
-            {userStatus.name || "이름 없음"}
-          </p>
+          <p className="text-gray-700 text-lg">{user.name || "이름 없음"}</p>
         </div>
         <div className="mb-4">
           <p className="font-bold text-xl mb-2">현재 잔액:</p>
           <p className="text-gray-700 text-lg">
-            {userStatus.currentMoney !== null
-              ? `${userStatus.currentMoney.toLocaleString()}원`
+            {user.currentMoney !== null
+              ? `${user.currentMoney.toLocaleString()}원`
               : "정보 없음"}
           </p>
         </div>
@@ -44,12 +41,10 @@ const UserStatus: React.FC = () => {
           <p className="font-bold text-xl mb-2">입실 상태:</p>
           <p
             className={`text-lg ${
-              userStatus.isCurrentlyCheckedIn
-                ? "text-green-500"
-                : "text-red-500"
+              user.isCurrentlyCheckedIn ? "text-green-500" : "text-red-500"
             }`}
           >
-            {userStatus.isCurrentlyCheckedIn ? "입실 중" : "퇴실 상태"}
+            {user.isCurrentlyCheckedIn ? "입실 중" : "퇴실 상태"}
           </p>
         </div>
       </div>
@@ -65,4 +60,4 @@ const UserStatus: React.FC = () => {
   );
 };
 
-export default UserStatus;
+export default EnterSuccess;
