@@ -82,18 +82,30 @@ const UserVerification = () => {
         throw new Error("입실 또는 퇴실 처리에 실패했습니다.");
       }
 
-      const userData = {
-        id: userId,
-        name: userInfoResponse.data.name,
-        currentMoney: userInfoResponse.data.currentMoney,
-        isCurrentlyCheckedIn: isCurrentlyCheckedIn,
-      };
-
-      // 입퇴실 상태에 따라 페이지 이동
+      // 입퇴실 처리 결과에 따라 다음 페이지로 이동
       if (isCurrentlyCheckedIn) {
-        navigate("/enter-success", { state: { user: userData } });
+        const entryUserData = {
+          id: userId,
+          name: userInfoResponse.data.name,
+        };
+        navigate("/enter-success", { state: { user: entryUserData } });
       } else {
-        navigate("/exit-success", { state: { user: userData } });
+        const exitUserData = {
+          id: userId,
+          name: userInfoResponse.data.name,
+          currentMoney: userInfoResponse.data.currentMoney,
+          entryDate: result.data.entryDate,
+          exitDate: result.data.exitDate,
+          fee: result.data.fee,
+        };
+
+        console.log("퇴실 처리 후 사용자 정보:", exitUserData);
+        // 요금이 현재 잔액보다 큰 경우 퇴실 실패 페이지로 이동
+        if (exitUserData.fee > exitUserData.currentMoney) {
+          navigate("/exit-failure", { state: { user: exitUserData } });
+        } else {
+          navigate("/exit-success", { state: { user: exitUserData } });
+        }
       }
     } catch (error) {
       console.error("입퇴실 처리 중 오류 발생:", error);

@@ -2,10 +2,48 @@
 
 import React from "react";
 import HomeButton from "../components/HomeButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { IoHomeSharp } from "react-icons/io5";
 
+// 날짜 변환 함수
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+// 이용시간 계산 함수
+const calculateUsageTimeFromFormattedStrings = (
+  entryDateStr: string,
+  exitDateStr: string
+) => {
+  // 문자열을 Date 객체로 변환 (형식: YYYY-MM-DD HH:mm)
+  const entry = new Date(entryDateStr);
+  const exit = new Date(exitDateStr);
+
+  const differenceInMs = exit.getTime() - entry.getTime(); // 밀리초 차이
+  const differenceInMinutes = Math.floor(differenceInMs / (1000 * 60)); // 분 단위로 변환
+
+  const hours = Math.floor(differenceInMinutes / 60); // 시간
+  const minutes = differenceInMinutes % 60; // 분
+
+  // 최소 1분으로 표시하거나 1분 미만일 경우 처리
+  if (hours === 0 && minutes === 0) {
+    return `1분 미만`;
+  }
+
+  // 기본적인 시간과 분 출력
+  return `${hours}시간 ${minutes}분`;
+};
+
 const ExitSuccess: React.FC = () => {
+  const location = useLocation();
+  const user = location.state?.user;
   const navigate = useNavigate();
   const handleClick = () => {
     navigate("/");
@@ -14,63 +52,53 @@ const ExitSuccess: React.FC = () => {
   return (
     <div className="flex flex-col justify-center items-center text-center">
       {/* 상단 문구 */}
-      <div className="flex mt-20 text-3xl font-bold font-noto">
-        오현진님 좋은 시간 보내셨나요?{" "}
+      <div className="flex mt-[18vw] text-3xl font-bold font-noto">
+        {`${user.name}님 좋은 시간 보내셨나요?`}
       </div>
 
       {/* 중단 영수증 */}
-      <div className="w-[60vw] max-w-[825px] mt-10 px-[1vw] py-[6vh] bg-white rounded-[20px] shadow flex-col justify-center items-center gap-[5vh] inline-flex">
-        <div className="h-[7vh] p-2.5 justify-center items-center gap-2.5 inline-flex">
-          <div className="w-full text-center">
-            <span className="text-[#f9b812] text-[7vw] font-normal font-kaushan tracking-[0.1em]">
-              Ca
-            </span>
-            <span className="text-black text-[7vw] font-normal font-kaushan tracking-[0.1em]">
-              rtoon{" "}
-            </span>
-            <span className="text-[#f9b812] text-[7vw] font-normal font-kaushan tracking-[0.1em]">
-              Ti
-            </span>
-            <span className="text-black text-[7vw] font-normal font-kaushan tracking-[0.1em]">
-              me
-            </span>
-          </div>
+      <div className="w-[53vw] max-w-[400px] mt-[12vw] px-[3vw] pt-[3vh] pb-[6vh] bg-white rounded-xl shadow-lg flex flex-col justify-center items-center gap-[3vh]">
+        <div className="w-10/12 text-center text-[6vw] font-normal mb-[1vh] font-kaushan">
+          <span className="text-[#f9b812]">Ca</span>
+          <span className="text-black">rtoon </span>
+          <span className="text-[#f9b812]">Ti</span>
+          <span className="text-black">me</span>
         </div>
-        <div className="w-full justify-between items-center inline-flex">
-          <div className="w-[45%] text-center text-black text-[6vw] font-bold font-noto tracking-widest">
+        <div className="w-10/12 flex justify-between items-center">
+          <div className="text-left text-black text-[3.5vw] font-bold font-noto">
             이용시간
           </div>
-          <div className="w-[45%] text-center text-black text-[6vw] font-bold font-noto tracking-widest">
-            1시간 1분
+          <div className="text-right text-black text-[3.5vw] font-bold font-noto">
+            {calculateUsageTimeFromFormattedStrings(
+              formatDate(user.entryDate),
+              formatDate(user.exitDate)
+            )}
           </div>
         </div>
-        <div className="w-full pt-9 pb-[35px] bg-white border-t-4 border-[#c9c9c8] justify-center items-center inline-flex">
-          <div className="grow shrink basis-0 self-stretch flex-col justify-start items-start inline-flex">
-            <div className="w-full justify-between items-center inline-flex mb-4">
-              <div className="w-[45%] text-center text-black text-[4.5vw] font-normal font-noto tracking-wider">
-                입실시간
-              </div>
-              <div className="w-[50%] text-center text-black text-[3.5vw] font-normal font-noto tracking-wide">
-                2024-08-29 12:31
-              </div>
+        <div className="w-10/12 pt-[2vh] pb-[2vh] border-t border-b border-[#c9c9c8]">
+          <div className="w-full flex justify-between items-center mb-[1vh]">
+            <div className="text-left text-black text-[3vw] font-normal font-noto">
+              입실시간
             </div>
-            <div className="w-full justify-between items-center inline-flex">
-              <div className="w-[45%] text-center text-black text-[4.5vw] font-normal font-noto tracking-wider">
-                퇴실시간
-              </div>
-              <div className="w-[50%] text-center text-black text-[3.5vw] font-normal font-noto tracking-wide">
-                2024-08-29 13:32
-              </div>
+            <div className="text-right text-black text-[2.5vw] font-normal font-noto">
+              {formatDate(user.entryDate)}
+            </div>
+          </div>
+          <div className="w-full flex justify-between items-center">
+            <div className="w-[40%] text-left text-black text-[3vw] font-normal font-noto">
+              퇴실시간
+            </div>
+            <div className="w-[60%] text-right text-black text-[2.5vw] font-normal font-noto">
+              {formatDate(user.exitDate)}
             </div>
           </div>
         </div>
-        <div className="w-full h-[0px] border-4 border-[#c9c9c8]"></div>
-        <div className="w-full justify-between items-center inline-flex">
-          <div className="w-[45%] text-center text-black text-[4.5vw] font-normal font-noto tracking-wider">
-            Total
+        <div className="w-10/12 flex justify-between items-center mt-[0.1vh]">
+          <div className="w-[40%] text-left text-black text-[3vw] font-bold font-noto">
+            결제 포인트
           </div>
-          <div className="w-[45%] text-center text-black text-[4.5vw] font-normal font-noto tracking-wider">
-            10000 원
+          <div className="w-[60%] text-right text-black text-[3.5vw] font-bold font-noto">
+            {user.fee}
           </div>
         </div>
       </div>
