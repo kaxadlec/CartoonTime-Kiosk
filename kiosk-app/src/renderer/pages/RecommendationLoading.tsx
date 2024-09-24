@@ -1,4 +1,4 @@
-// RecommendationLoading.tsx
+// EnterProcess.tsx
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Title from "../components/Title";
@@ -35,7 +35,7 @@ const RecommendationLoading: React.FC = () => {
             </svg>
           </div>
           <div className="text-center text-black text-[4.5vw] font-bold font-noto tracking-wide">
-            당신의 취향에 맞는 만화 추전 중
+            당신의 취향에 맞는 만화 추천 중
           </div>
         </div>
       </div>

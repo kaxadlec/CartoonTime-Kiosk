@@ -1,3 +1,5 @@
+// types/cartoon.ts
+
 export interface Cartoon {
   id: number;
   title: string;
