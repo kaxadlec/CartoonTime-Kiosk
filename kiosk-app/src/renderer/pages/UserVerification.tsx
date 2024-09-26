@@ -98,23 +98,34 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
           // 잔액이 부족하면
           if (userInfoResponse.data.currentMoney < paymentAmount) {
             console.log("잔액 부족: 결제 금액보다 현재 잔액이 적습니다.");
-            const exitUserData = {
+
+            const currentTime = new Date(); // 현재 시간을 구함 (퇴실하려고 하는 시간)
+            const exitFailureUserData: {
+              id: number;
+              name: string;
+              currentMoney: number;
+              entryDate: string; // entryDate는 string으로 지정
+              exitDate: Date | null; // exitDate는 Date 또는 null을 허용
+              attemptedExitTime: Date; // 시도한 퇴실 시간
+              fee: number;
+            } = {
               id: userId,
               name: userInfoResponse.data.name,
               currentMoney: userInfoResponse.data.currentMoney,
-              entryDate: lastLog.entryDate,
-              exitDate: null, // 아직 퇴실하지 않음
-              fee: paymentAmount,
+              entryDate: lastLog.entryDate, // string 형식의 날짜
+              exitDate: null, // 아직 퇴실하지 않음, 명시적으로 null 설정
+              attemptedExitTime: currentTime, // 현재 시간
+              fee: paymentAmount, // 결제 금액
             };
 
             // fcm 메시지 전송 (결제해야할 금액 전송 조건)
             await sendMessage(
               userId,
               userInfoResponse.data.fcmtoken,
-              `${exitUserData.fee}원`
+              `${exitFailureUserData.fee}원`
             );
             // 실패 페이지로 이동
-            navigate("/exit-failure", { state: { user: exitUserData } });
+            navigate("/exit-failure", { state: { user: exitFailureUserData } });
 
             return; // 퇴실 처리 중단
           }

@@ -34,7 +34,7 @@ const calculateUsageTimeFromFormattedStrings = (
 
   // 최소 1분으로 표시하거나 1분 미만일 경우 처리
   if (hours === 0 && minutes === 0) {
-    return `1분 미만`;
+    return `1분`;
   }
 
   // 기본적인 시간과 분 출력
