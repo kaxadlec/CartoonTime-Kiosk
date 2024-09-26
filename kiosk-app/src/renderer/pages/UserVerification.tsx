@@ -6,13 +6,18 @@ import { getUserIdFromUWB } from "../utils/uwbUtils";
 import { getEntryExitLog } from "../api/entryExitLogApi";
 import { postEntry, postExit } from "../api/entryExitPostApi";
 import { getUserInfo } from "../api/userInfoApi";
+import { postPayment } from "../api/payPostApi"; // 결제 API 추가
 
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
 import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
 
 interface UserVerificationProps {
-  sendMessage: (userId: number, content: string) => Promise<void>;
+  sendMessage: (
+    userId: number,
+    fcmtoken: string,
+    content: string
+  ) => Promise<void>;
 }
 
 const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
@@ -77,6 +82,44 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         } else {
           // 퇴실 처리
           console.log("퇴실 중..");
+
+          // 1. 현재 시간과 입실 시간의 차이를 분 단위로 계산
+          const entryDate = new Date(lastLog.entryDate);
+          const currentDate = new Date();
+          const timeDifferenceInMinutes = Math.floor(
+            (currentDate.getTime() - entryDate.getTime()) / 60000
+          );
+
+          // 2. 결제해야할 금액 계산 (분당 50원)
+          const paymentAmount = timeDifferenceInMinutes * 50;
+          console.log("결제해야할 금액:", paymentAmount);
+
+          // 3. 현재 잔액과 결제 금액 비교
+          // 잔액이 부족하면
+          if (userInfoResponse.data.currentMoney < paymentAmount) {
+            console.log("잔액 부족: 결제 금액보다 현재 잔액이 적습니다.");
+            const exitUserData = {
+              id: userId,
+              name: userInfoResponse.data.name,
+              currentMoney: userInfoResponse.data.currentMoney,
+              entryDate: lastLog.entryDate,
+              exitDate: null, // 아직 퇴실하지 않음
+              fee: paymentAmount,
+            };
+
+            // fcm 메시지 전송 (결제해야할 금액 전송 조건)
+            await sendMessage(
+              userId,
+              userInfoResponse.data.fcmtoken,
+              `${exitUserData.fee}원`
+            );
+            // 실패 페이지로 이동
+            navigate("/exit-failure", { state: { user: exitUserData } });
+
+            return; // 퇴실 처리 중단
+          }
+
+          // 4. 결제 금액이 충분할 경우 퇴실 처리
           result = await postExit(userId);
         }
         console.log("입/퇴실 처리 결과:", result);
@@ -85,11 +128,11 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
           if (result.message === "입실하셨습니다.") {
             isCurrentlyCheckedIn = true;
             console.log("입실 처리 완료");
-            await sendMessage(userId, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+            await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
           } else if (result.message === "퇴실하셨습니다.") {
             isCurrentlyCheckedIn = false;
             console.log("퇴실 처리 완료");
-            await sendMessage(userId, "입퇴실"); // fcmm 메시지 전송 (입퇴실이라는 단어 조건)
+            await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
           } else {
             console.log("예상치 못한 메시지:", result.message);
             throw new Error("예상치 못한 서버 응답");
@@ -109,21 +152,34 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         };
         navigate("/enter-success", { state: { user: entryUserData } });
       } else {
-        const exitUserData = {
-          id: userId,
-          name: userInfoResponse.data.name,
-          currentMoney: userInfoResponse.data.currentMoney,
-          entryDate: result.data.entryDate,
-          exitDate: result.data.exitDate,
-          fee: result.data.fee,
-        };
+        // 퇴실 후 결제 처리
+        try {
+          console.log("결제 중...");
+          const paymentResponse = await postPayment(userId, result.data.fee);
+          console.log("결제 결과:", paymentResponse);
+          if (!paymentResponse.success) {
+            throw new Error("결제 실패: " + paymentResponse.message);
+          }
 
-        console.log("퇴실 처리 후 사용자 정보:", exitUserData);
-        // 요금이 현재 잔액보다 큰 경우 퇴실 실패 페이지로 이동
-        if (exitUserData.fee > exitUserData.currentMoney) {
-          navigate("/exit-failure", { state: { user: exitUserData } });
-        } else {
+          // 결제 성공 시 사용자 정보 출력
+          const exitUserData = {
+            id: userId,
+            name: userInfoResponse.data.name,
+            currentMoney: paymentResponse.data.currentMoney,
+            entryDate: result.data.entryDate,
+            exitDate: result.data.exitDate,
+            fee: result.data.fee,
+          };
+
+          console.log("퇴실 처리 후 사용자 정보:", exitUserData);
           navigate("/exit-success", { state: { user: exitUserData } });
+        } catch (paymentError) {
+          console.error("결제 중 오류 발생:", paymentError);
+          setError(
+            paymentError instanceof Error
+              ? paymentError.message
+              : "결제 중 알 수 없는 오류가 발생했습니다."
+          );
         }
       }
     } catch (error) {

@@ -25,10 +25,13 @@ declare global {
 }
 
 const App = () => {
-  const sendMessage = async (userId: number, content: string) => {
+  const sendMessage = async (
+    userId: number,
+    fcmToken: string,
+    content: string
+  ) => {
     const senderId = `kiosk_user_${userId}`;
-    const receiverId =
-      "ezZVvLoXRP6VUKrx_TEP0b:APA91bEh4Jf3G_aFdqJyWd5H9KH0cKGsxkhiG4fNIiAJp_ahhFJ4B6bviLuQW5VxKlNwyaopM1uYpM3_c2TqzbLWQcfvNYaBDqyviifRvyWrOd9By04-aFCjGs8FWQnVLlYmDfl0L8zJ";
+    const receiverId = fcmToken;
     if (!receiverId) {
       console.error("Receiver ID가 환경 변수에 설정되어 있지 않습니다.");
       return;
