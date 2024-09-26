@@ -1,6 +1,6 @@
 // pages/ExitFailure.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import HomeButton from "../components/HomeButton";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoHomeSharp } from "react-icons/io5";
@@ -49,6 +49,16 @@ const ExitFailure: React.FC = () => {
   const handleClick = () => {
     navigate("/");
   };
+
+  // 페이지가 렌더링된 후 5초 뒤에 자동으로 홈으로 이동
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/"); // 5초 뒤에 자동으로 홈으로 이동
+    }, 5000);
+
+    // 컴포넌트가 언마운트되면 타이머를 정리
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <div className="flex flex-col justify-center items-center text-center">
@@ -104,6 +114,13 @@ const ExitFailure: React.FC = () => {
       </div>
       {/* 하단 홈버튼 */}
       <div className="fixed bottom-0 left-0 w-full py-[2vh] z-10">
+        {/* 5초 뒤에 처음화면으로 넘어갑니다 문구 */}
+        <div className="w-full flex justify-center items-center mb-[2vh]">
+          <span className="text-center text-black text-[3vw] font-bold font-noto">
+            5초 뒤에 처음화면으로 넘어갑니다.
+          </span>
+        </div>
+
         <div className="w-full flex justify-center items-center">
           <button
             onClick={handleClick}
