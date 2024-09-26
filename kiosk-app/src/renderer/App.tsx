@@ -13,9 +13,7 @@ import ExitFailure from "./pages/ExitFailure";
 import CartoonDetails from "./pages/CartoonDetails";
 
 // fcmApi 임포트
-import { saveMessage } from './api/fcmApi'; // fcmApi의 경로를 확인하세요
-
-
+import { saveMessage } from "./api/fcmApi"; // fcmApi의 경로를 확인하세요
 
 // 전역 타입 선언 추가
 declare global {
@@ -27,15 +25,16 @@ declare global {
 }
 
 const App = () => {
-  // 앱 시작 시 메시지 저장
-  useEffect(() => {
-    const senderId = "yourSenderId"; // 실제 senderId 값으로 대체
-    const receiverId = "yourReceiverId"; // 실제 receiverId 값으로 대체
-    const content = "앱이 시작되었습니다."; // 메시지 내용
-
-    saveMessage(senderId, receiverId, content);
-  }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 실행
-
+  const sendMessage = async (userId: number, content: string) => {
+    const senderId = `kiosk_user_${userId}`;
+    const receiverId =
+      "ezZVvLoXRP6VUKrx_TEP0b:APA91bEh4Jf3G_aFdqJyWd5H9KH0cKGsxkhiG4fNIiAJp_ahhFJ4B6bviLuQW5VxKlNwyaopM1uYpM3_c2TqzbLWQcfvNYaBDqyviifRvyWrOd9By04-aFCjGs8FWQnVLlYmDfl0L8zJ";
+    if (!receiverId) {
+      console.error("Receiver ID가 환경 변수에 설정되어 있지 않습니다.");
+      return;
+    }
+    await saveMessage(senderId, receiverId, content);
+  };
 
   return (
     <Router>
@@ -43,7 +42,10 @@ const App = () => {
         <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<Start />} />
-            <Route path="/user-verification" element={<UserVerification />} />
+            <Route
+              path="/user-verification"
+              element={<UserVerification sendMessage={sendMessage} />}
+            />
             <Route
               path="/recommendation-loading"
               element={<RecommendationLoading />}

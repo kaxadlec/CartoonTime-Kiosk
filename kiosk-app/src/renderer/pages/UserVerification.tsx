@@ -11,7 +11,11 @@ import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
 import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
 
-const UserVerification = () => {
+interface UserVerificationProps {
+  sendMessage: (userId: number, content: string) => Promise<void>;
+}
+
+const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
   const navigate = useNavigate(); // 페이지 이동 함수
   const [isLoading, setIsLoading] = useState(false); // 로딩 중 여부
   const [error, setError] = useState<string | null>(null);
@@ -70,14 +74,29 @@ const UserVerification = () => {
           // 입실 처리
           console.log("입실 중..");
           result = await postEntry(userId);
-          isCurrentlyCheckedIn = true;
         } else {
           // 퇴실 처리
           console.log("퇴실 중..");
           result = await postExit(userId);
-          isCurrentlyCheckedIn = false;
         }
         console.log("입/퇴실 처리 결과:", result);
+
+        if (result.success) {
+          if (result.message === "입실하셨습니다.") {
+            isCurrentlyCheckedIn = true;
+            console.log("입실 처리 완료");
+            await sendMessage(userId, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+          } else if (result.message === "퇴실하셨습니다.") {
+            isCurrentlyCheckedIn = false;
+            console.log("퇴실 처리 완료");
+            await sendMessage(userId, "입퇴실"); // fcmm 메시지 전송 (입퇴실이라는 단어 조건)
+          } else {
+            console.log("예상치 못한 메시지:", result.message);
+            throw new Error("예상치 못한 서버 응답");
+          }
+        } else {
+          throw new Error(result.error || "입/퇴실 처리 실패");
+        }
       } catch (checkError) {
         throw new Error("입실 또는 퇴실 처리에 실패했습니다.");
       }
