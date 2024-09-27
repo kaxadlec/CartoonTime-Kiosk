@@ -119,11 +119,11 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
             };
 
             // fcm 메시지 전송 (결제해야할 금액 전송 조건)
-            await sendMessage(
-              userId,
-              userInfoResponse.data.fcmtoken,
-              `${exitFailureUserData.fee}원`
-            );
+            // await sendMessage(
+            //   userId,
+            //   userInfoResponse.data.fcmtoken,
+            //   `${exitFailureUserData.fee}원`
+            // );
             // 실패 페이지로 이동
             navigate("/exit-failure", { state: { user: exitFailureUserData } });
 
@@ -139,11 +139,11 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
           if (result.message === "입실하셨습니다.") {
             isCurrentlyCheckedIn = true;
             console.log("입실 처리 완료");
-            await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+            // await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
           } else if (result.message === "퇴실하셨습니다.") {
             isCurrentlyCheckedIn = false;
             console.log("퇴실 처리 완료");
-            await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+            // await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
           } else {
             console.log("예상치 못한 메시지:", result.message);
             throw new Error("예상치 못한 서버 응답");
