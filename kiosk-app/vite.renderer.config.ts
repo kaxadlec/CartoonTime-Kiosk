@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import { pluginExposeRenderer } from "./vite.base.config";
 import { resolve } from "path";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
@@ -11,15 +12,22 @@ export default defineConfig((env) => {
   const name = forgeConfigSelf.name ?? "";
 
   return {
-    root: resolve(__dirname, "src/renderer"),
+    root: path.resolve(__dirname, "src/renderer"),
     mode,
     base: "./",
     build: {
-      outDir: `.vite/renderer/${name}`,
+      // outDir: `.vite/renderer/${name}`,
+      outDir: path.join(__dirname, ".vite", "renderer"),
+      // outDir: path.resolve(__dirname, "dist/renderer"),
+      emptyOutDir: true,
     },
+
     plugins: [react(), pluginExposeRenderer(name)],
     resolve: {
       preserveSymlinks: true,
+      // alias: {
+      //   "@": path.resolve(__dirname, "src/renderer"),
+      // },
     },
     clearScreen: false,
     css: {
