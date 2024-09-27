@@ -34,7 +34,10 @@ const createWindow = () => {
 
   // 환경 변수 확인을 위한 로그
   console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
-
+  console.log(
+    "MAIN_WINDOW_VITE_DEV_SERVER_URL",
+    MAIN_WINDOW_VITE_DEV_SERVER_URL
+  );
   // 그리고 앱의 index.html을 로드
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
