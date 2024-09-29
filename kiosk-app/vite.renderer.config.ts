@@ -17,9 +17,11 @@ export default defineConfig((env) => {
     base: "./",
     build: {
       // outDir: `.vite/renderer/${name}`,
-      outDir: path.join(__dirname, ".vite", "renderer"),
+      // outDir: path.join(__dirname, ".vite", "renderer"),
       // outDir: path.resolve(__dirname, "dist/renderer"),
+      outDir: path.resolve(__dirname, ".vite/renderer"),
       emptyOutDir: true,
+      assetsDir: ".",
     },
 
     plugins: [react(), pluginExposeRenderer(name)],

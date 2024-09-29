@@ -1,6 +1,6 @@
 // 메인 React 컴포넌트
 import React, { Suspense, useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import Start from "./pages/Start";

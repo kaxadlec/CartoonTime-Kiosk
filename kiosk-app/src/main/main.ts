@@ -31,14 +31,10 @@ const createWindow = () => {
   // 환경 변수 확인을 위한 로그
   // console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
   console.log("Main process API_BASE_URL:", API_BASE_URL);
-  console.log(
-    "MAIN_WINDOW_VITE_DEV_SERVER_URL",
-    MAIN_WINDOW_VITE_DEV_SERVER_URL
-  );
-  console.log("MAIN_WINDOW_VITE_NAME", MAIN_WINDOW_VITE_NAME);
-  console.log("__dirname:", __dirname);
-  console.log("app.getAppPath():", app.getAppPath());
-  console.log("Files in app directory:", fs.readdirSync(app.getAppPath()));
+
+  // console.log("MAIN_WINDOW_VITE_NAME", MAIN_WINDOW_VITE_NAME);
+  // console.log("__dirname:", __dirname);
+  // console.log("app.getAppPath():", app.getAppPath());
 
   // 그리고 앱의 index.html을 로드
   // if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -55,17 +51,17 @@ const createWindow = () => {
     // mainWindow.loadFile(
     //   path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     // );
-    const indexPath = path.join(
-      __dirname,
-      "..",
-      ".vite",
-      "renderer",
-      MAIN_WINDOW_VITE_NAME,
-      "index.html"
-    );
-    console.log("Trying to load:", indexPath);
+    // mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`));
+    const indexPath = path.join(__dirname, "../renderer/index.html");
+    console.log("Loading file from:", indexPath);
     mainWindow.loadFile(indexPath);
+    // console.log("Trying to load:", indexPath);
+    // mainWindow.loadFile(indexPath);
   } else {
+    // console.log(
+    //   "MAIN_WINDOW_VITE_DEV_SERVER_URL",
+    //   MAIN_WINDOW_VITE_DEV_SERVER_URL
+    // );
     // 개발 모드
     mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
   }
@@ -75,7 +71,7 @@ const createWindow = () => {
     // mainWindow.setMenuBarVisibility(true); // 메뉴 바 숨기기
   } else {
     Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
-    // mainWindow.webContents.openDevTools(); // 개발자 도구 열기
+    mainWindow.webContents.openDevTools(); // 개발자 도구 열기
   }
 };
 
