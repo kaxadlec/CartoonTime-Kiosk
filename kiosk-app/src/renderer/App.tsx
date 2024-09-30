@@ -30,12 +30,8 @@ const App = () => {
     fcmToken: string,
     content: string
   ) => {
-    const senderId = `kiosk_user_${userId}`;
+    const senderId = `kiosk`;
     const receiverId = fcmToken;
-    if (!receiverId) {
-      console.error("Receiver ID가 환경 변수에 설정되어 있지 않습니다.");
-      return;
-    }
     await saveMessage(senderId, receiverId, content);
   };
 
