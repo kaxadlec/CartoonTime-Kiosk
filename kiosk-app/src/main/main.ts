@@ -4,9 +4,12 @@ import { app, BrowserWindow, Menu, ipcMain } from "electron";
 import path from "path";
 import dotenv from "dotenv";
 import axios from "axios";
+import fs from "fs";
+// declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string | undefined;
+// declare const MAIN_WINDOW_VITE_NAME: string;
 
-// .env 파일 로드
-dotenv.config({ path: path.join(__dirname, "../../.env") });
+const API_BASE_URL =
+  process.env.VITE_API_BASE_URL || "https://j11a507.p.ssafy.io";
 
 // Windows에서 설치/제거 시 바로가기를 생성/제거하는 것을 처리
 if (require("electron-squirrel-startup")) {
@@ -25,23 +28,42 @@ const createWindow = () => {
     },
   });
 
-  // // API_BASE_URL을 렌더러 프로세스에 전달
-  // mainWindow.webContents.on("did-finish-load", () => {
-  //   mainWindow.webContents.send("update-env", {
-  //     API_BASE_URL: process.env.API_BASE_URL,
-  //   });
-  // });
-
   // 환경 변수 확인을 위한 로그
-  console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
+  // console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
+  console.log("Main process API_BASE_URL:", API_BASE_URL);
+
+  // console.log("MAIN_WINDOW_VITE_NAME", MAIN_WINDOW_VITE_NAME);
+  // console.log("__dirname:", __dirname);
+  // console.log("app.getAppPath():", app.getAppPath());
 
   // 그리고 앱의 index.html을 로드
-  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+  // if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+  //   mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+  // } else {
+  //   path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`);
+  //   // mainWindow.loadFile(
+  //   //   path.join(__dirname, "..", "renderer", "main_window", "index.html")
+  //   // );
+  // }
+  if (app.isPackaged) {
+    // dotenv.config({ path: path.join(__dirname, "./.env") }); // 패키지 내부에 있는 .env 파일
+    // 프로덕션 모드
+    // mainWindow.loadFile(
+    //   path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+    // );
+    // mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`));
+    const indexPath = path.join(__dirname, "../renderer/index.html");
+    console.log("Loading file from:", indexPath);
+    mainWindow.loadFile(indexPath);
+    // console.log("Trying to load:", indexPath);
+    // mainWindow.loadFile(indexPath);
   } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    );
+    // console.log(
+    //   "MAIN_WINDOW_VITE_DEV_SERVER_URL",
+    //   MAIN_WINDOW_VITE_DEV_SERVER_URL
+    // );
+    // 개발 모드
+    mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
   }
 
   if (process.env.NODE_ENV === "development") {
@@ -49,6 +71,7 @@ const createWindow = () => {
     // mainWindow.setMenuBarVisibility(true); // 메뉴 바 숨기기
   } else {
     Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
+    mainWindow.webContents.openDevTools(); // 개발자 도구 열기
   }
 };
 
@@ -79,7 +102,8 @@ app.on("activate", () => {
 // API 요청을 처리하는 IPC 핸들러
 ipcMain.handle("api-request", async (event, { method, endpoint, data }) => {
   try {
-    const url = `${process.env.API_BASE_URL}${endpoint}`;
+    // const url = `${process.env.API_BASE_URL}${endpoint}`;
+    const url = `${API_BASE_URL}${endpoint}`;
     const response = await axios({ method, url, data });
     return response.data;
   } catch (error) {
