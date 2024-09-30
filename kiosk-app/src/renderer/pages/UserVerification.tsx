@@ -1,5 +1,5 @@
 // UserVerification.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromUWB } from "../utils/uwbUtils";
 
@@ -7,6 +7,12 @@ import { getEntryExitLog } from "../api/entryExitLogApi";
 import { postEntry, postExit } from "../api/entryExitPostApi";
 import { getUserInfo } from "../api/userInfoApi";
 import { postPayment } from "../api/payPostApi"; // 결제 API 추가
+// fcmApi 임포트
+import {
+  saveMessage,
+  listenForMessages,
+  removeMessageListener,
+} from "../api/fcmApi";
 
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
@@ -23,26 +29,67 @@ interface UserVerificationProps {
 const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
   const navigate = useNavigate(); // 페이지 이동 함수
   const [isLoading, setIsLoading] = useState(false); // 로딩 중 여부
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // 에러 메시지
+  const hasRun = useRef(false); // useEffect가 최초 실행됐는지 여부
+  const [isMessageSending, setIsMessageSending] = useState(false);
 
-  const handleEnter = async () => {
+  useEffect(() => {
+    const sendBleServerOnMessage = async () => {
+      if (hasRun.current) return; // 이미 실행됐다면 return
+      hasRun.current = true; // 실행 표시
+
+      setIsMessageSending(true);
+      setError(null);
+      try {
+        await saveMessage("kiosk", "module", "bleServerOn");
+        console.log("bleServerOn 요청 전송 완료");
+      } catch (error) {
+        console.error("BLE 서버 켜기 메시지 전송 실패:", error);
+        setError("bleServerOn 요청 실패");
+      } finally {
+        // 메시지 전송의 성공 여부와 상관없이, 메시지 전송 상태를 false로 설정하여 전송이 완료되었음을 명확히 합니다
+        setIsMessageSending(false);
+      }
+    };
+
+    sendBleServerOnMessage(); // BLE 서버 켜기 메시지 전송 함수 호출
+    listenForMessages(handleMessageReceived); // 메시지 리스닝 시작
+
+    return () => {
+      // cleanup 로직이 필요하다면 여기에 작성
+      removeMessageListener(); // 메시지 리스닝 종료
+    };
+  }, []);
+
+  // 메시지 수신 시 처리 함수
+  const handleMessageReceived = async (message: any) => {
+    console.log("새 메시지 수신: ", message);
+    if (message.content && !isNaN(message.content)) {
+      const receivedUserId = message.content;
+      console.log("module, firebase에서 수신한 userId:", receivedUserId);
+      // setUserId(receivedUserId);
+      await handleUserVerification(receivedUserId);
+    }
+  };
+
+  // 임시 입퇴실 버튼 클릭 시
+  const handleButtonClick = () => {
+    handleUserVerification(1).catch((error) => {
+      // 1번 사용자로 입퇴실 처리
+      console.error("User verification failed:", error);
+      setError("사용자 확인에 실패했습니다.");
+    });
+  };
+
+  const handleUserVerification = async (receivedUserId: number) => {
     setIsLoading(true); // 로딩 중임을 표시
     setError(null); // 에러 메시지 초기화
 
     try {
-      // UWB로부터 사용자 ID를 가져옴
-      let userId: number; // 사용자 ID
-      try {
-        userId = await getUserIdFromUWB();
-        console.log(`UWB로부터 사용자 ID ${userId}를 가져왔습니다.`);
-      } catch (uwbError) {
-        throw new Error("UWB로부터 사용자 ID를 가져오는데 실패했습니다.");
-      }
-
       // 사용자 정보 조회
       let userInfoResponse;
       try {
-        userInfoResponse = await getUserInfo(userId);
+        userInfoResponse = await getUserInfo(receivedUserId);
         console.log("사용자 정보 조회 결과:", userInfoResponse);
         if (!userInfoResponse.success) {
           throw new Error(userInfoResponse.message || "사용자 정보 조회 실패");
@@ -55,7 +102,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
       let entryExitLogResponse;
       try {
         // 입퇴실 기록 조회
-        entryExitLogResponse = await getEntryExitLog(userId);
+        entryExitLogResponse = await getEntryExitLog(receivedUserId);
         console.log("입퇴실 기록 조회 결과:", entryExitLogResponse);
         if (!entryExitLogResponse.success) {
           throw new Error(
@@ -78,7 +125,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         if (!lastLog || lastLog.exitDate !== null) {
           // 입실 처리
           console.log("입실 중..");
-          result = await postEntry(userId);
+          result = await postEntry(receivedUserId);
         } else {
           // 퇴실 처리
           console.log("퇴실 중..");
@@ -109,7 +156,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
               attemptedExitTime: Date; // 시도한 퇴실 시간
               fee: number;
             } = {
-              id: userId,
+              id: receivedUserId,
               name: userInfoResponse.data.name,
               currentMoney: userInfoResponse.data.currentMoney,
               entryDate: lastLog.entryDate, // string 형식의 날짜
@@ -119,11 +166,12 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
             };
 
             // fcm 메시지 전송 (결제해야할 금액 전송 조건)
-            // await sendMessage(
-            //   userId,
-            //   userInfoResponse.data.fcmtoken,
-            //   `${exitFailureUserData.fee}원`
-            // );
+            await sendMessage(
+              receivedUserId,
+              userInfoResponse.data.fcmtoken,
+              `${exitFailureUserData.fee}원`
+            );
+
             // 실패 페이지로 이동
             navigate("/exit-failure", { state: { user: exitFailureUserData } });
 
@@ -131,7 +179,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
           }
 
           // 4. 결제 금액이 충분할 경우 퇴실 처리
-          result = await postExit(userId);
+          result = await postExit(receivedUserId);
         }
         console.log("입/퇴실 처리 결과:", result);
 
@@ -139,11 +187,21 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
           if (result.message === "입실하셨습니다.") {
             isCurrentlyCheckedIn = true;
             console.log("입실 처리 완료");
-            // await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+            // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+            await sendMessage(
+              receivedUserId,
+              userInfoResponse.data.fcmtoken,
+              "입퇴실"
+            );
           } else if (result.message === "퇴실하셨습니다.") {
             isCurrentlyCheckedIn = false;
             console.log("퇴실 처리 완료");
-            // await sendMessage(userId, userInfoResponse.data.fcmtoken, "입퇴실"); // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+            // fcm 메시지 전송 (입퇴실이라는 단어 조건)
+            await sendMessage(
+              receivedUserId,
+              userInfoResponse.data.fcmtoken,
+              "입퇴실"
+            );
           } else {
             console.log("예상치 못한 메시지:", result.message);
             throw new Error("예상치 못한 서버 응답");
@@ -158,7 +216,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
       // 입퇴실 처리 결과에 따라 다음 페이지로 이동
       if (isCurrentlyCheckedIn) {
         const entryUserData = {
-          id: userId,
+          id: receivedUserId,
           name: userInfoResponse.data.name,
         };
         navigate("/enter-success", { state: { user: entryUserData } });
@@ -166,7 +224,10 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         // 퇴실 후 결제 처리
         try {
           console.log("결제 중...");
-          const paymentResponse = await postPayment(userId, result.data.fee);
+          const paymentResponse = await postPayment(
+            receivedUserId,
+            result.data.fee
+          );
           console.log("결제 결과:", paymentResponse);
           if (!paymentResponse.success) {
             throw new Error("결제 실패: " + paymentResponse.message);
@@ -174,7 +235,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
 
           // 결제 성공 시 사용자 정보 출력
           const exitUserData = {
-            id: userId,
+            id: receivedUserId,
             name: userInfoResponse.data.name,
             currentMoney: paymentResponse.data.currentMoney,
             entryDate: result.data.entryDate,
@@ -285,11 +346,11 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         {/* 입퇴실임시버튼 */}
         <div className="w-full flex justify-center items-center gap-[5vw] mt-[5vh]">
           <button
-            onClick={handleEnter}
+            onClick={handleButtonClick}
             disabled={isLoading}
             className="px-[5vw] py-[2vh] bg-neutral-700 rounded-[2vw] text-white text-[4vw] font-bold font-noto"
           >
-            UWB 통신 전 임시 입퇴실 버튼
+            userId 수신 전 임시 입퇴실 버튼
           </button>
         </div>
 
