@@ -1,6 +1,7 @@
 // 메인 React 컴포넌트
 import React, { Suspense, useEffect, useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 import Layout from "./components/Layout";
 import Start from "./pages/Start";
@@ -25,6 +26,22 @@ declare global {
 }
 
 const App = () => {
+  const [uid, setUid] = useState<string | null>(null);
+
+  useEffect(() => {
+    const auth = getAuth();
+    signInAnonymously(auth)
+      .then((userCredential) => {
+        // 로그인 성공
+        const user = userCredential.user;
+        setUid(user.uid);
+        console.log("익명으로 로그인되었습니다.");
+      })
+      .catch((error) => {
+        console.error("익명 로그인 실패:", error);
+      });
+  }, []);
+
   const sendMessage = async (
     userId: number,
     fcmToken: string,
