@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { getAllComics } from "../api/allComicsGetApi";
+import { Cartoon } from "../types/cartoon";
+// import { dummyRecommendations } from "../data/dummyRecommendations";
+
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
-import { dummyRecommendations } from "../data/dummyRecommendations";
-import { Cartoon } from "../types/cartoon";
 import { MdLocationOn } from "react-icons/md";
 
 const CartoonRecommendation: React.FC = () => {
@@ -12,18 +14,28 @@ const CartoonRecommendation: React.FC = () => {
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<Cartoon[]>([]);
   const [activeTab, setActiveTab] = useState<string>("user");
-  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [selectedLocation, setselectedLocation] = useState<string | null>(null);
   const [selectedCartoonId, setSelectedCartoonId] = useState<number | null>(
     null
   );
 
   useEffect(() => {
-    // 실제 API 호출 대신 더미 데이터를 사용
-    setRecommendations(dummyRecommendations);
+    const fetchComics = async () => {
+      try {
+        const comics = await getAllComics();
+        console.log(comics);
+        setRecommendations(comics);
+      } catch (error) {
+        console.error("만화 정보 조회 실패:", error);
+        // 에러 처리 로직 추가 (예: 에러 메시지 표시)
+      }
+    };
+
+    fetchComics();
   }, []);
 
   const handleCartoonClick = (id: number, section: string) => {
-    setSelectedSection(section);
+    setselectedLocation(section);
     setSelectedCartoonId(id);
     // navigate(`/cartoon-details/${id}`);  // 필요하다면 이 부분을 주석 해제하세요
   };
@@ -138,7 +150,7 @@ const CartoonRecommendation: React.FC = () => {
                     <div className="transform rotate-90 text-center text-black text-[2vh] font-bold font-noto">
                       {letter}
                     </div>
-                    {selectedSection === letter && (
+                    {selectedLocation === letter && (
                       <div className="absolute inset-0 flex items-center justify-end">
                         <MdLocationOn className="w-[3.4vh] h-[3.4vh] text-red-600 animate-pulse rotate-90" />
                       </div>
@@ -177,18 +189,18 @@ const CartoonRecommendation: React.FC = () => {
                 ? "border-[0.4vw] border-[#f9b812]"
                 : "border border-gray-300"
             }`}
-            onClick={() => handleCartoonClick(cartoon.id, cartoon.section)}
+            onClick={() => handleCartoonClick(cartoon.id, cartoon.location)}
           >
             <div className="w-full aspect-[6/9] relative overflow-hidden">
               <img
                 className="absolute inset-0 w-full h-full object-cover rounded-[1vw] shadow"
                 src={cartoon.imageUrl}
-                alt={cartoon.title}
+                alt={cartoon.titleKo}
               />
             </div>
 
             <div className="w-full text-center text-black text-[3vw] font-bold font-noto">
-              {cartoon.title}
+              {cartoon.titleKo}
             </div>
           </div>
         ))}

@@ -1,7 +1,6 @@
 // UserVerification.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUserIdFromUWB } from "../utils/uwbUtils";
 
 import { getEntryExitLog } from "../api/entryExitLogApi";
 import { postEntry, postExit } from "../api/entryExitPostApi";

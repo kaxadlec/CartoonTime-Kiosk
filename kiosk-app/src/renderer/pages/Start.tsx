@@ -51,7 +51,7 @@ const Start: React.FC = () => {
       {/* step 설명 */}
       <div className="flex justify-center gap-[11vw] w-full mb-[8vh]">
         {/* 첫번째 박스 */}
-        <div className="relative w-[36vw] h-[48vw] px-[0.15vw] pt-[5vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
+        <div className="relative w-[36vw] h-[45vw] px-[0.15vw] pt-[5vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
           {/* step1 박스제목*/}
           <div className="absolute -top-[5vw] left-1/2 transform -translate-x-1/2">
             <div className="w-[15vw] h-[10vw] bg-[#f9b812] rounded-2xl shadow-lg flex items-center justify-center">
@@ -80,7 +80,7 @@ const Start: React.FC = () => {
           </div>
         </div>
         {/* 두번째 박스 */}
-        <div className="relative w-[36vw] h-[48vw] px-[0.15vw] pt-[1vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
+        <div className="relative w-[36vw] h-[45vw] px-[0.15vw] pt-[1vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
           {/* step2 박스제목*/}
           <div className="absolute -top-[5vw] left-1/2 transform -translate-x-1/2">
             <div className="w-[15vw] h-[10vw] bg-[#f9b812] rounded-2xl shadow-lg flex items-center justify-center">

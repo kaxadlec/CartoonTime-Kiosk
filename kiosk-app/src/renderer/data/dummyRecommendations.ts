@@ -1,3 +1,5 @@
+// src/renderer/data/dummyRecommendations.ts
+
 import { Cartoon } from "../types/cartoon";
 
 export const dummyRecommendations: Cartoon[] = [

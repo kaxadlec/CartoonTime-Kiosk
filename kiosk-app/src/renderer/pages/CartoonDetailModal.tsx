@@ -12,7 +12,7 @@ interface CartoonDetails {
   imageUrl: string;
 }
 
-const CartoonDetails: React.FC = () => {
+const CartoonDetailModal: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [details, setDetails] = useState<CartoonDetails | null>(null);
