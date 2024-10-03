@@ -11,7 +11,6 @@ import CartoonRecommendation from "./pages/CartoonRecommendation";
 import EnterSuccess from "./pages/EnterSuccess";
 import ExitSuccess from "./pages/ExitSuccess";
 import ExitFailure from "./pages/ExitFailure";
-import CartoonDetails from "./pages/CartoonDetails";
 
 // fcmApi 임포트
 import { saveMessage } from "./api/fcmApi"; // fcmApi의 경로를 확인하세요

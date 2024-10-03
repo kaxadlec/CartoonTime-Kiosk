@@ -1,9 +1,7 @@
 // Start.tsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import comicIcon from "../assets/images/png/comic-icon.png";
-import phoneBackIcon from "../assets/images/png/phone-back-icon.png";
-import phoneFrontIcon from "../assets/images/png/phone-front-icon.png";
 import step1Icon from "../assets/images/png/step-1-icon.png";
 import step2Icon from "../assets/images/png/step-2-icon.png";
 

@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getAllComics } from "../api/allComicsGetApi";
 import { Cartoon } from "../types/cartoon";
-// import { dummyRecommendations } from "../data/dummyRecommendations";
+import CartoonDetailModal from "./CartoonDetailModal";
 
-import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
 import { MdLocationOn } from "react-icons/md";
 
 const CartoonRecommendation: React.FC = () => {
   const location = useLocation();
   const user = location.state?.user;
-  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<Cartoon[]>([]);
   const [activeTab, setActiveTab] = useState<string>("user");
   const [selectedLocation, setselectedLocation] = useState<string | null>(null);
   const [selectedCartoonId, setSelectedCartoonId] = useState<number | null>(
     null
   );
+
+  const [selectedCartoon, setSelectedCartoon] = useState<Cartoon | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchComics = async () => {
@@ -34,10 +35,11 @@ const CartoonRecommendation: React.FC = () => {
     fetchComics();
   }, []);
 
-  const handleCartoonClick = (id: number, section: string) => {
-    setselectedLocation(section);
-    setSelectedCartoonId(id);
-    // navigate(`/cartoon-details/${id}`);  // 필요하다면 이 부분을 주석 해제하세요
+  const handleCartoonClick = (cartoon: Cartoon) => {
+    setselectedLocation(cartoon.location);
+    setSelectedCartoonId(cartoon.id);
+    setSelectedCartoon(cartoon);
+    setIsModalOpen(true);
   };
 
   const getActiveTabTitle = () => {
@@ -189,7 +191,7 @@ const CartoonRecommendation: React.FC = () => {
                 ? "border-[0.4vw] border-[#f9b812]"
                 : "border border-gray-300"
             }`}
-            onClick={() => handleCartoonClick(cartoon.id, cartoon.location)}
+            onClick={() => handleCartoonClick(cartoon)}
           >
             <div className="w-full aspect-[6/9] relative overflow-hidden">
               <img
@@ -207,6 +209,11 @@ const CartoonRecommendation: React.FC = () => {
       </div>
 
       <HomeButton />
+      <CartoonDetailModal
+        cartoon={selectedCartoon}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

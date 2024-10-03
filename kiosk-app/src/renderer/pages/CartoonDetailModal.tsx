@@ -1,76 +1,90 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Title from "../components/Title";
-import HomeButton from "../components/HomeButton";
+import { Cartoon } from "../types/cartoon";
 
-interface CartoonDetails {
-  id: number;
-  title: string;
-  author: string;
-  genre: string;
-  description: string;
-  imageUrl: string;
+interface CartoonDetailModalProps {
+  cartoon: Cartoon | null;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const CartoonDetailModal: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [details, setDetails] = useState<CartoonDetails | null>(null);
+const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
+  cartoon,
+  isOpen,
+  onClose,
+}) => {
+  const [animationClass, setAnimationClass] = useState(
+    "translate-y-full opacity-0"
+  );
 
   useEffect(() => {
-    // 여기서 실제 API 호출을 통해 만화 상세 정보를 가져와야 합니다.
-    // 지금은 더미 데이터를 사용합니다.
-    const dummyDetails: CartoonDetails = {
-      id: Number(id),
-      title: "원피스",
-      author: "오다 에이치로",
-      genre: "모험",
-      description: "해적왕을 꿈꾸는 루피의 모험 이야기",
-      imageUrl: "/path/to/onepiece.jpg",
-    };
-    setDetails(dummyDetails);
-  }, [id]);
-
-  const handleGoBack = () => {
-    navigate(-1); // 이전 페이지로 이동
-  };
-
-  if (!details) {
-    return <div>Loading...</div>;
-  }
+    let timeoutId: NodeJS.Timeout;
+    if (isOpen) {
+      timeoutId = setTimeout(() => {
+        setAnimationClass("translate-y-0 opacity-100");
+      }, 10);
+    } else {
+      setAnimationClass("translate-y-full opacity-0");
+    }
+    return () => clearTimeout(timeoutId);
+  }, [isOpen]);
 
   return (
-    <div className="flex flex-col h-full">
-      <Title />
-      <div className="flex-grow overflow-y-auto px-4 py-6">
-        <button
-          onClick={handleGoBack}
-          className="mb-4 text-yellow-300 hover:text-yellow-700"
-        >
-          ← 뒤로 가기
-        </button>
-        <h2 className="text-3xl font-bold text-center mb-6">{details.title}</h2>
-        <img
-          src={details.imageUrl}
-          alt={details.title}
-          className="w-full h-64 object-cover mb-4 rounded"
-        />
-        <p className="text-lg mb-2">
-          <strong>작가:</strong> {details.author}
-        </p>
-        <p className="text-lg mb-2">
-          <strong>장르:</strong> {details.genre}
-        </p>
-        <p className="text-lg mb-4">
-          <strong>설명:</strong> {details.description}
-        </p>
-        <button className="w-full bg-yellow-400 text-white py-2 px-4 rounded hover:bg-yellow-600">
-          만화 위치 찾기
-        </button>
+    <>
+      {/* Semi-transparent overlay */}
+      <div
+        className={`fixed inset-0 bg-black transition-opacity duration-500 ${
+          isOpen ? "bg-opacity-10" : "bg-opacity-0 pointer-events-none"
+        }`}
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div
+        className={`fixed inset-x-0 bottom-0 z-50 bg-[#F4F2EE] rounded-t-3xl shadow-lg transform transition-all duration-500 ease-out ${animationClass}`}
+        style={{ height: "40vh" }}
+      >
+        {cartoon && (
+          <div className="p-[4vw] h-full overflow-y-auto">
+            <button
+              onClick={onClose}
+              className="absolute top-[3vw] right-[3vw] text-gray-600 hover:text-gray-800 text-[2.5vw]"
+            >
+              닫기
+            </button>
+            <div className="flex justify-center items-center h-full pt-[12vw]">
+              <div className="flex items-start gap-[10vw] max-w-[90%]">
+                <div className="w-1/3 min-w-[20vw] max-w-[30vw]">
+                  <img
+                    src={cartoon.imageUrl}
+                    alt={cartoon.titleKo}
+                    className="w-full h-auto object-cover rounded-lg shadow-md"
+                  />
+                </div>
+                <div className="flex-1 flex flex-col justify-between h-full">
+                  <h2 className="text-[4vw] font-bold mb-[2vw] text-gray-800">
+                    {cartoon.titleKo}
+                  </h2>
+                  <p className="text-[2.5vw] text-gray-700 mb-[1.5vw]">
+                    <strong>영문 제목:</strong> {cartoon.titleEn}
+                  </p>
+                  <p className="text-[2.5vw] text-gray-700 mb-[1.5vw]">
+                    <strong>작가:</strong> {cartoon.authorKo}
+                  </p>
+                  <p className="text-[2.5vw] text-gray-700 mb-[1.5vw]">
+                    <strong>장르:</strong>{" "}
+                    {cartoon.genres.map((g) => g.genreNameKo).join(", ")}
+                  </p>
+                  <p className="text-[2.5vw] text-gray-700">
+                    <strong>위치:</strong> {cartoon.location}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <HomeButton />
-    </div>
+    </>
   );
 };
 
-export default CartoonDetails;
+export default CartoonDetailModal;
