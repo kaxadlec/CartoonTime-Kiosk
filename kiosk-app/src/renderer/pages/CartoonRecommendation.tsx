@@ -161,7 +161,7 @@ const CartoonRecommendation: React.FC = () => {
       </div>
 
       {/* 만화위치 섹터 */}
-      <div className="flex justify-center items-start gap-[10vw] px-[10vw] mt-[4vh]">
+      {/* <div className="flex justify-center items-start gap-[10vw] px-[10vw] mt-[4vh]">
         <div className="flex gap-[9vw]">
           {[
             ["A", "B", "C"],
@@ -189,10 +189,51 @@ const CartoonRecommendation: React.FC = () => {
             </div>
           ))}
         </div>
+      </div> */}
+
+      {/* 만화위치 섹터 */}
+      <div className="flex flex-col items-center mt-[5vh] -ml-[15vw]">
+        <div className="flex justify-center gap-[6vw] mb-[4vh]">
+          {["A", "B", "C"].map((letter) => (
+            <div key={letter} className="relative w-[4vh] h-[8vh]">
+              <div className="absolute inset-0 bg-[#f9b812] border border-black flex justify-center items-center">
+                <div className="text-center text-black text-[2vh] font-bold font-noto">
+                  {letter}
+                </div>
+                {selectedLocation === letter && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <MdLocationOn className="w-[5vh] h-[5vh] text-red-600 animate-pulse" />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center gap-[6vw] ml-[5vw]">
+          {["D", "E", "F"].map((letter) => (
+            <div key={letter} className="relative w-[4vh] h-[8vh]">
+              <div className="absolute inset-0 bg-[#f9b812] border border-black flex justify-center items-center">
+                <div className="text-center text-black text-[2vh] font-bold font-noto">
+                  {letter}
+                </div>
+                {selectedLocation === letter && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <MdLocationOn className="w-[5vh] h-[5vh] text-red-600 animate-pulse" />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="absolute right-[20vh] top-[15vh] w-[4vh] h-[4vh] bg-gray-500 border border-black flex justify-center items-center">
+          <div className="text-center text-white text-[1vh] font-bold font-noto">
+            Kiosk
+          </div>
+        </div>
       </div>
 
       {/* 하단제목 */}
-      <div className="justify-center items-center gap-[2vw] flex mt-[6vh]">
+      <div className="justify-center items-center gap-[2vw] flex mt-[7vh]">
         <div className="w-[20vw] h-[0px] border-[0.2vh] border-[#dedbdb]"></div>
         <div className="w-[50vw] text-center text-black text-[4vw] font-bold font-noto tracking-widest">
           {getActiveTabTitle()}
@@ -239,7 +280,7 @@ const CartoonRecommendation: React.FC = () => {
                       />
                     </div>
 
-                    <div className="w-full text-center text-black text-[3vw] font-bold font-noto line-clamp-2">
+                    <div className="w-full text-center text-black text-[2.6vw] font-bold font-noto line-clamp-2">
                       {cartoon.title}
                     </div>
                   </div>
