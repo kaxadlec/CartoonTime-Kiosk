@@ -129,7 +129,7 @@ const CartoonRecommendation: React.FC = () => {
         <div className="absolute left-[5vw] top-0 bottom-0 w-[1vw] bg-[#f9b812]"></div>
         <div className="w-full h-full flex justify-start items-center pl-[9vw]">
           <div className="text-black text-[3vw] font-bold font-noto">
-            만화 위치
+            만화 위치 안내
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@ const CartoonRecommendation: React.FC = () => {
                     </div>
                     {selectedLocation === letter && (
                       <div className="absolute inset-0 flex items-center justify-end">
-                        <MdLocationOn className="w-[3.4vh] h-[3.4vh] text-red-600 animate-pulse rotate-90" />
+                        <MdLocationOn className="w-[5vh] h-[5vh] text-red-600 animate-pulse rotate-90" />
                       </div>
                     )}
                   </div>

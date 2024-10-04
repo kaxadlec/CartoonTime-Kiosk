@@ -15,7 +15,7 @@ import {
 
 import Title from "../components/Title";
 import HomeButton from "../components/HomeButton";
-import PhoneFrontIcon2 from "../assets/images/png/phone-front-icon-2.png";
+import VerificationIcon from "../assets/images/png/verification-icon.png";
 
 interface UserVerificationProps {
   sendMessage: (
@@ -268,16 +268,14 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
   return (
     <div>
       <Title /> {/* Title 컴포넌트 사용 */}
-      <div className="mt-[1vh] mb-[10vh]">
-        {/* 상단 제목 */}
-        <div className="w-full mb-[3vw]">
-          <div className="self-stretch p-[0.13vw] flex justify-center items-center">
-            <div className="text-center text-black text-[6vw] font-bold font-noto tracking-wide">
-              키오스크 인증
-            </div>
-          </div>
+      {/* 상단 제목 */}
+      <div className="fixed top-[15vh] left-0 right-0 w-full z-20">
+        <div className="text-center text-black text-[6vw] font-bold font-noto tracking-wide">
+          키오스크 인증
         </div>
-
+      </div>
+      {/* 로딩 중일 때와 아닐 때의 화면 구성 */}
+      <div className="mt-[18vh] mb-[10vh]">
         {isLoading ? (
           // 입퇴실 처리 중일 때
           <div className="w-full mb-[3vw] flex flex-col items-center justify-center h-[60vw]">
@@ -299,7 +297,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         ) : (
           // 입퇴실 처리 중이 아닐 때
           <>
-            <div className="w-full mb-[3vw] flex flex-col items-center justify-center h-[60vw]">
+            <div className="w-full mb-[10vw] flex flex-col items-center justify-center h-[60vw]">
               {/* 안내 문구 */}
               <div className="self-stretch p-[0.13vw]">
                 <div className="text-center text-black text-[3.5vw] font-medium font-noto tracking-normal">
@@ -309,53 +307,48 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
                 </div>
               </div>
               {/* 이미지 */}
-              <div>
+              <div className="mt-[10vw]">
                 <img
-                  src={PhoneFrontIcon2}
-                  alt="PhoneFrontIcon2"
-                  className="w-[50vw] h-auto"
+                  src={VerificationIcon}
+                  alt="KioskVerification"
+                  className="w-auto h-[60vw]"
                 />
               </div>
             </div>
             <HomeButton />
           </>
         )}
-
-        {/* 하단 문구 */}
-        <div className="w-full h-[14.79vw] p-[0.13vw] flex justify-center items-center">
-          <div className="w-full text-center text-[3vw] font-bold font-noto tracking-wide">
-            <span className="text-black">Cartoon Time에서는 </span>
-            <span className="text-[#f9b812] font-black">UWB</span>
-            <span className="text-black">
-              {" "}
-              기술을 이용하여
-              <br />{" "}
-            </span>
-            <span className="text-[#f9b812] font-black">
-              간편 본인 인증/결제
-            </span>
-            <span className="text-black">와 </span>
-            <span className="text-[#f9b812] font-black">
-              만화책 위치찾기 서비스
-            </span>
-            <span className="text-black">를 제공합니다.</span>
-          </div>
-        </div>
-
-        {/* 입퇴실임시버튼 */}
-        <div className="w-full flex justify-center items-center gap-[5vw] mt-[5vh]">
-          <button
-            onClick={handleButtonClick}
-            disabled={isLoading}
-            className="px-[5vw] py-[2vh] bg-neutral-700 rounded-[2vw] text-white text-[4vw] font-bold font-noto"
-          >
-            userId 수신 전 임시 입퇴실 버튼
-          </button>
-        </div>
-
-        {/* 에러 메시지 표시 */}
-        {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
       </div>
+      {/* 하단 문구 */}
+      <div className="fixed bottom-[12vh] left-0 right-0 w-full z-20">
+        <div className="mx-auto text-center text-[3vw] font-bold font-noto tracking-wide px-4">
+          <span className="text-black">Cartoon Time에서는 </span>
+          <span className="text-[#f9b812] font-black">UWB</span>
+          <span className="text-black">
+            {" "}
+            기술을 이용하여
+            <br />{" "}
+          </span>
+          <span className="text-[#f9b812] font-black">간편 본인 인증/결제</span>
+          <span className="text-black">와 </span>
+          <span className="text-[#f9b812] font-black">
+            만화책 위치찾기 서비스
+          </span>
+          <span className="text-black">를 제공합니다.</span>
+        </div>
+      </div>
+      {/* 입퇴실임시버튼 */}
+      {/* <div className="w-full flex justify-center items-center gap-[5vw] mt-[5vh]">
+        <button
+          onClick={handleButtonClick}
+          disabled={isLoading}
+          className="px-[2vw] py-[1vh] bg-neutral-700 rounded-[2vw] text-white text-[3vw] font-bold font-noto"
+        >
+          userId 수신 전 임시 입퇴실 버튼
+        </button>
+      </div> */}
+      {/* 에러 메시지 표시 */}
+      {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
     </div>
   );
 };
