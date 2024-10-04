@@ -58,23 +58,35 @@ const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
             </div>
             <div className="flex justify-center items-center h-full pt-[1vw] font-noto">
               <div className="flex items-start gap-[15vw] max-w-[90%]">
+                {/* 만화 이미지 */}
                 <div className="w-1/3 min-w-[20vw] max-w-[30vw]">
                   <img
                     src={cartoon.imageUrl}
-                    alt={cartoon.titleKo}
+                    alt={cartoon.title}
                     className="w-full h-auto object-cover rounded-lg shadow-md"
                   />
                 </div>
+
+                {/* 만화 정보 */}
                 <div className="flex-1 flex flex-col justify-between h-full">
+                  {/* 만화 제목 */}
                   <h2 className="text-[4vw] font-extrabold mb-[6vw] ">
-                    {cartoon.titleKo}
+                    {cartoon.title}
                   </h2>
 
+                  {/* 만화 작가 */}
                   <div className="text-[3vw] mb-[3vw]">
-                    <p className="font-medium mb-[1vw]">작가 </p>
-                    <p className="text-gray-700 ">{cartoon.authorKo}</p>
+                    <p className="font-bold mb-[1vw]">작가 </p>
+                    <p className="text-gray-700 ">{cartoon.author}</p>
                   </div>
-                  <div className="text-[3vw] mb-[4vw]">
+
+                  {/* 만화 위치 */}
+                  <div className="text-[3vw] mb-[3vw]">
+                    <p className="font-bold mb-[1vw]">위치 </p>
+                    <p className="text-gray-700 ">{cartoon.location}</p>
+                  </div>
+                  {/* 만화 장르 */}
+                  {/* <div className="text-[3vw] mb-[4vw]">
                     <p className="font-medium mb-[1vw]">장르 </p>
                     <div className="flex flex-nowrap gap-[1.5vw]">
                       {cartoon.genres.map((g) => (
@@ -86,7 +98,7 @@ const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
                         </span>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

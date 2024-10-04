@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { getAllComics } from "../api/allComicsGetApi";
 import { Cartoon } from "../types/cartoon";
+import { getRecommendedComics } from "../api/userComicsGetApi";
 import CartoonDetailModal from "./CartoonDetailModal";
 
 import HomeButton from "../components/HomeButton";
 import { MdLocationOn } from "react-icons/md";
+import { MdNavigateNext } from "react-icons/md";
+import { MdNavigateBefore } from "react-icons/md";
 
 const CartoonRecommendation: React.FC = () => {
   const location = useLocation();
@@ -17,27 +19,30 @@ const CartoonRecommendation: React.FC = () => {
     null
   );
 
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCartoon, setSelectedCartoon] = useState<Cartoon | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        const comics = await getAllComics();
-        console.log(comics);
-        setRecommendations(comics);
+        // 사용자 ID 기반으로 만화 정보 불러오기
+        if (user && user.id) {
+          const comics = await getRecommendedComics(user.id); // 사용자 ID를 기반으로 만화 불러오기
+          console.log(comics);
+          setRecommendations(comics);
+        }
       } catch (error) {
-        console.error("만화 정보 조회 실패:", error);
-        // 에러 처리 로직 추가 (예: 에러 메시지 표시)
+        console.error("사용자 만화 정보 조회 실패:", error);
+        // 에러 처리 로직 추가
       }
     };
 
     fetchComics();
-  }, []);
+  }, [user]);
 
   const handleCartoonClick = (cartoon: Cartoon) => {
     setselectedLocation(cartoon.location);
-    setSelectedCartoonId(cartoon.id);
     setSelectedCartoon(cartoon);
     setIsModalOpen(true);
   };
@@ -68,6 +73,27 @@ const CartoonRecommendation: React.FC = () => {
     }
   };
 
+  const getVisibleCartoons = () => {
+    if (!recommendations || recommendations.length === 0) {
+      return [];
+    }
+    const visibleCartoons = [];
+    for (let i = 0; i < 3; i++) {
+      const index = (currentIndex + i) % recommendations.length;
+      visibleCartoons.push(recommendations[index]);
+    }
+    return visibleCartoons;
+  };
+
+  const scrollLeft = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? recommendations.length - 1 : prevIndex - 1
+    );
+  };
+
+  const scrollRight = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % recommendations.length);
+  };
   return (
     <div className="flex flex-col h-full w-full">
       {/* 토글 버튼 */}
@@ -181,33 +207,60 @@ const CartoonRecommendation: React.FC = () => {
         </div>
       </div>
 
-      {/* 만화 목록 */}
-      <div className="flex justify-center items-center gap-[2.6vw] mt-[4vh] flex-wrap">
-        {recommendations.slice(0, 4).map((cartoon) => (
-          <div
-            key={cartoon.id}
-            className={`flex-col justify-center items-center gap-[2vh] flex w-[20vw] cursor-pointer rounded-[1vw] p-[1vw] shadow-md transition-shadow duration-300 ${
-              selectedCartoonId === cartoon.id
-                ? "border-[0.4vw] border-[#f9b812]"
-                : "border border-gray-300"
-            }`}
-            onClick={() => handleCartoonClick(cartoon)}
-          >
-            <div className="w-full aspect-[6/9] relative overflow-hidden">
-              <img
-                className="absolute inset-0 w-full h-full object-cover rounded-[1vw] shadow"
-                src={cartoon.imageUrl}
-                alt={cartoon.titleKo}
-              />
+      {/* 만화 리스트 */}
+      <div className="relative w-full px-[5vw]">
+        {recommendations && recommendations.length > 0 ? (
+          <>
+            {/* 좌측 화살표 */}
+            <button
+              onClick={scrollRight}
+              className="absolute left-0 top-1/2 text-[8vw]"
+            >
+              <MdNavigateBefore />
+            </button>
+
+            <div className="flex justify-center items-center overflow-hidden mt-[4vh] w-full">
+              <div className="flex gap-[4vw]" style={{ width: "85vw" }}>
+                {getVisibleCartoons().map((cartoon, index) => (
+                  <div
+                    key={index}
+                    className={`flex-none flex-col justify-center items-center gap-[1vh] flex w-[25vw] h-auto cursor-pointer rounded-[1vw] p-[1vw] shadow-md transition-shadow duration-300 ${
+                      selectedCartoon && selectedCartoon.title === cartoon.title
+                        ? "border-[0.4vw] border-[#f9b812]"
+                        : "border border-gray-300"
+                    }`}
+                    onClick={() => handleCartoonClick(cartoon)}
+                  >
+                    <div className="w-full h-[20vh] relative overflow-hidden">
+                      <img
+                        className="absolute inset-0 w-full h-full object-cover rounded-[1vw] shadow"
+                        src={cartoon.imageUrl}
+                        alt={cartoon.title}
+                      />
+                    </div>
+
+                    <div className="w-full text-center text-black text-[3vw] font-bold font-noto line-clamp-2">
+                      {cartoon.title}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="w-full text-center text-black text-[3vw] font-bold font-noto">
-              {cartoon.titleKo}
-            </div>
+            {/* 우측 화살표 */}
+            <button
+              onClick={scrollRight}
+              className="absolute right-0 top-1/2 text-[8vw]"
+            >
+              <MdNavigateNext />
+            </button>
+          </>
+        ) : (
+          <div className="text-center font-noto">
+            만화 정보를 불러오는 중입니다...
           </div>
-        ))}
+        )}
       </div>
-
       <HomeButton />
       <CartoonDetailModal
         cartoon={selectedCartoon}
