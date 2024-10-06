@@ -35,3 +35,12 @@
     stroke-dashoffset: -450; /* 선이 부드럽게 이어지도록 offset만 변경 */
   }
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

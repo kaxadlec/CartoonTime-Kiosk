@@ -1,7 +1,6 @@
 // pages/ExitSuccess.tsx
 
-import React, { useEffect } from "react";
-import HomeButton from "../components/HomeButton";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoHomeSharp } from "react-icons/io5";
 
@@ -49,15 +48,22 @@ const ExitSuccess: React.FC = () => {
     navigate("/");
   };
 
-  // 페이지가 렌더링된 후 5초 뒤에 자동으로 홈으로 이동
+  const [timeLeft, setTimeLeft] = useState(10); // 10초 타이머 초기값
+
+  // 페이지가 렌더링된 후 10초 뒤에 자동으로 홈으로 이동
+  // 타이머를 설정하는 useEffect
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/"); // 5초 뒤에 자동으로 홈으로 이동
-    }, 5000);
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+    }, 1000); // 1초마다 업데이트
+
+    if (timeLeft === 0) {
+      navigate("/"); // 타이머가 0이 되면 홈으로 이동
+    }
 
     // 컴포넌트가 언마운트되면 타이머를 정리
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    return () => clearInterval(timer);
+  }, [timeLeft, navigate]);
 
   return (
     <div className="flex flex-col justify-center items-center text-center">
@@ -67,7 +73,7 @@ const ExitSuccess: React.FC = () => {
       </div>
 
       {/* 중단 영수증 */}
-      <div className="w-[53vw] max-w-[400px] mt-[12vw] px-[3vw] pt-[3vh] pb-[6vh] bg-white rounded-xl shadow-lg flex flex-col justify-center items-center gap-[3vh]">
+      <div className="w-[53vw] mt-[12vw] px-[3vw] pt-[3vh] pb-[6vh] bg-white rounded-xl shadow-lg flex flex-col justify-center items-center gap-[3vh]">
         <div className="w-10/12 text-center text-[6vw] font-normal mb-[1vh] font-kaushan">
           <span className="text-[#f9b812]">Ca</span>
           <span className="text-black">rtoon </span>
@@ -115,10 +121,10 @@ const ExitSuccess: React.FC = () => {
 
       {/* 하단 홈버튼 */}
       <div className="fixed bottom-0 left-0 w-full py-[2vh] z-10">
-        {/* 5초 뒤에 처음화면으로 넘어갑니다 문구 */}
+        {/* 10초 뒤에 처음화면으로 넘어갑니다 문구 */}
         <div className="w-full flex justify-center items-center mb-[2vh]">
           <span className="text-center text-black text-[3vw] font-bold font-noto">
-            5초 뒤에 처음화면으로 넘어갑니다.
+            {`${timeLeft}초 뒤에 처음화면으로 넘어갑니다.`}
           </span>
         </div>
 

@@ -1,11 +1,9 @@
 // Start.tsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import comicIcon from "../assets/images/png/comic-icon.png";
-import handTouchIcon from "../assets/images/png/hand-touch-icon.png";
-import phoneBackIcon from "../assets/images/png/phone-back-icon.png";
-import phoneFrontIcon from "../assets/images/png/phone-front-icon.png";
-import phoneLoginIcon from "../assets/images/png/phone-login-icon.png";
+import step1Icon from "../assets/images/png/step-1-icon.png";
+import step2Icon from "../assets/images/png/step-2-icon.png";
 
 const Start: React.FC = () => {
   const navigate = useNavigate();
@@ -32,16 +30,16 @@ const Start: React.FC = () => {
         </div>
 
         <div className="flex flex-col items-center">
-          <div className="mb-[0.5vh]">
+          <div className="mb-[2.5vh]">
             <img src={comicIcon} alt="comicIcon" className="w-[50vw] h-auto" />
           </div>
-          <div className="mb-[2vh]">
+          {/* <div className="mb-[2vh]">
             <img
               src={handTouchIcon}
               alt="handTouchIcon"
               className="w-[10vw] h-auto"
             />
-          </div>
+          </div> */}
           <div className="text-center text-black text-[5vw] font-semibold font-noto tracking-normal">
             화면을 터치해서 시작하기
           </div>
@@ -51,7 +49,7 @@ const Start: React.FC = () => {
       {/* step 설명 */}
       <div className="flex justify-center gap-[11vw] w-full mb-[8vh]">
         {/* 첫번째 박스 */}
-        <div className="relative w-[36vw] h-[36vw] px-[0.15vw] pt-[5vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
+        <div className="relative w-[36vw] h-[45vw] px-[0.15vw] pt-[5vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
           {/* step1 박스제목*/}
           <div className="absolute -top-[5vw] left-1/2 transform -translate-x-1/2">
             <div className="w-[15vw] h-[10vw] bg-[#f9b812] rounded-2xl shadow-lg flex items-center justify-center">
@@ -64,9 +62,9 @@ const Start: React.FC = () => {
           <div className="flex flex-col items-center justify-center h-full w-full">
             <div className="flex justify-center mb-[3vh] relative">
               <img
-                src={phoneLoginIcon}
+                src={step1Icon}
                 alt="phoneLoginIcon"
-                className="w-[10vw] h-auto"
+                className="w-auto h-[20vw]"
               />
             </div>
             <div className="w-[30vw] text-center">
@@ -80,7 +78,7 @@ const Start: React.FC = () => {
           </div>
         </div>
         {/* 두번째 박스 */}
-        <div className="relative w-[36vw] h-[36vw] px-[0.15vw] pt-[5vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
+        <div className="relative w-[36vw] h-[45vw] px-[0.15vw] pt-[1vw] rounded-[1.5vw] border-[0.7vw] border-[#f6cf6c] flex-col justify-center items-center gap-[0.3125vw] inline-flex">
           {/* step2 박스제목*/}
           <div className="absolute -top-[5vw] left-1/2 transform -translate-x-1/2">
             <div className="w-[15vw] h-[10vw] bg-[#f9b812] rounded-2xl shadow-lg flex items-center justify-center">
@@ -91,16 +89,11 @@ const Start: React.FC = () => {
           </div>
           {/* 두 번째 박스 내용 */}
           <div className="flex flex-col items-center justify-center h-full w-full">
-            <div className="flex justify-center mb-[3vh] relative">
+            <div className="flex justify-center mb-[2vh] relative">
               <img
-                src={phoneBackIcon}
-                alt="phoneBackIcon"
-                className="w-[6vw] h-auto mr-[3vw]"
-              />
-              <img
-                src={phoneFrontIcon}
-                alt="phoneFrontIcon"
-                className="w-[6vw] h-auto ml-[3vw]"
+                src={step2Icon}
+                alt="phoneLoginIcon"
+                className="w-auto h-[25vw]"
               />
             </div>
             <div className="w-[29vw] text-center">
