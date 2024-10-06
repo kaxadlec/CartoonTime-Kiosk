@@ -5,9 +5,7 @@ import { getRecommendedComics } from "../api/userComicsGetApi";
 import CartoonDetailModal from "./CartoonDetailModal";
 
 import HomeButton from "../components/HomeButton";
-import { MdLocationOn } from "react-icons/md";
-import { MdNavigateNext } from "react-icons/md";
-import { MdNavigateBefore } from "react-icons/md";
+import { MdLocationOn, MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 const CartoonRecommendation: React.FC = () => {
   const location = useLocation();
@@ -44,6 +42,7 @@ const CartoonRecommendation: React.FC = () => {
   const handleCartoonClick = (cartoon: Cartoon) => {
     setselectedLocation(cartoon.location);
     setSelectedCartoon(cartoon);
+    setSelectedCartoonId(cartoon.id);
     setIsModalOpen(true);
   };
 
@@ -161,37 +160,6 @@ const CartoonRecommendation: React.FC = () => {
       </div>
 
       {/* 만화위치 섹터 */}
-      {/* <div className="flex justify-center items-start gap-[10vw] px-[10vw] mt-[4vh]">
-        <div className="flex gap-[9vw]">
-          {[
-            ["A", "B", "C"],
-            ["D", "E", "F"],
-            ["G", "H"],
-          ].map((column, index) => (
-            <div
-              key={index}
-              className="flex flex-col justify-start items-center gap-[0.5vh]"
-            >
-              {column.map((letter) => (
-                <div key={letter} className="relative w-[4vh] h-[8vh]">
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[8vh] h-[4vh] bg-[#f9b812] border border-black flex justify-center items-center -rotate-90">
-                    <div className="transform rotate-90 text-center text-black text-[2vh] font-bold font-noto">
-                      {letter}
-                    </div>
-                    {selectedLocation === letter && (
-                      <div className="absolute inset-0 flex items-center justify-end">
-                        <MdLocationOn className="w-[5vh] h-[5vh] text-red-600 animate-pulse rotate-90" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div> */}
-
-      {/* 만화위치 섹터 */}
       <div className="flex flex-col items-center mt-[5vh] -ml-[15vw]">
         <div className="flex justify-center gap-[6vw] mb-[4vh]">
           {["A", "B", "C"].map((letter) => (
@@ -262,11 +230,11 @@ const CartoonRecommendation: React.FC = () => {
 
             <div className="flex justify-center items-center overflow-hidden mt-[4vh] w-full">
               <div className="flex gap-[4vw]" style={{ width: "85vw" }}>
-                {getVisibleCartoons().map((cartoon, index) => (
+                {getVisibleCartoons().map((cartoon) => (
                   <div
-                    key={index}
+                    key={cartoon.id}
                     className={`flex-none flex-col justify-center items-center gap-[1vh] flex w-[25vw] h-auto cursor-pointer rounded-[1vw] p-[1vw] shadow-md transition-shadow duration-300 ${
-                      selectedCartoon && selectedCartoon.title === cartoon.title
+                      selectedCartoonId === cartoon.id
                         ? "border-[0.4vw] border-[#f9b812]"
                         : "border border-gray-300"
                     }`}

@@ -59,11 +59,11 @@ const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
             <div className="flex justify-center items-center h-full pt-[1vw] font-noto">
               <div className="flex items-start gap-[15vw] max-w-[90%]">
                 {/* 만화 이미지 */}
-                <div className="w-1/3 min-w-[20vw] max-w-[30vw]">
+                <div className="w-[34vw] h-auto">
                   <img
                     src={cartoon.imageUrl}
                     alt={cartoon.title}
-                    className="w-full h-auto object-cover rounded-lg shadow-md"
+                    className="w-full h-full object-cover rounded-lg shadow-md"
                   />
                 </div>
 
@@ -79,15 +79,9 @@ const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
                     <p className="font-bold mb-[1vw]">작가 </p>
                     <p className="text-gray-700 ">{cartoon.author}</p>
                   </div>
-
-                  {/* 만화 위치 */}
-                  <div className="text-[3vw] mb-[3vw]">
-                    <p className="font-bold mb-[1vw]">위치 </p>
-                    <p className="text-gray-700 ">{cartoon.location}</p>
-                  </div>
                   {/* 만화 장르 */}
-                  {/* <div className="text-[3vw] mb-[4vw]">
-                    <p className="font-medium mb-[1vw]">장르 </p>
+                  <div className="text-[3vw] mb-[3vw]">
+                    <p className="font-bold mb-[1vw]">장르 </p>
                     <div className="flex flex-nowrap gap-[1.5vw]">
                       {cartoon.genres.map((g) => (
                         <span
@@ -98,7 +92,12 @@ const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
                         </span>
                       ))}
                     </div>
-                  </div> */}
+                  </div>
+                  {/* 만화 위치 */}
+                  <div className="text-[3vw] mb-[3vw]">
+                    <p className="font-bold mb-[1vw]">위치 </p>
+                    <p className="text-gray-700 ">{cartoon.location}</p>
+                  </div>
                 </div>
               </div>
             </div>

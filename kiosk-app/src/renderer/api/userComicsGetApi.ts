@@ -10,17 +10,17 @@ export const getRecommendedComics = async (
       endpoint: `/ctr/recommend/${userId}`, // 사용자 ID를 경로에 포함
     });
 
-    // 응답의 recommendations를 Cartoon 인터페이스에 맞게 변환
-    if (response?.recommendations && Array.isArray(response.recommendations)) {
-      const mappedComics: Cartoon[] = response.recommendations.map(
-        (item: any) => ({
-          title: item.title, // title을 title로 매핑
-          author: item.author, // author를 author로 매핑
-          location: item.location, // location 그대로 사용
-          imageUrl: item.s3url, // s3url을 imageUrl로 매핑
-          genres: [], // genres는 응답에 없으므로 빈 배열로 설정 (필요 시 추가 가능)
-        })
-      );
+    console.log("response", response);
+    // 응답이 배열인지 확인
+    if (Array.isArray(response)) {
+      const mappedComics: Cartoon[] = response.map((item: any) => ({
+        id: item.id,
+        title: item.titleKo,
+        author: item.authorKo,
+        location: item.location,
+        imageUrl: item.imageUrl,
+        genres: item.genres,
+      }));
       return mappedComics;
     } else {
       console.error("Unexpected API response structure:", response);
