@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Cartoon } from "../types/cartoon";
 import { getRecommendedComics } from "../api/userComicsGetApi";
+import {
+  saveMessage,
+  listenForMessages,
+  removeMessageListener,
+} from "../api/fcmApi";
+
 import CartoonDetailModal from "./CartoonDetailModal";
 
 import HomeButton from "../components/HomeButton";
 import { MdLocationOn, MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 const CartoonRecommendation: React.FC = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const user = location.state?.user;
   const [recommendations, setRecommendations] = useState<Cartoon[]>([]);
@@ -17,9 +24,10 @@ const CartoonRecommendation: React.FC = () => {
     null
   );
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedCartoon, setSelectedCartoon] = useState<Cartoon | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0); // 현재 보여지는 만화 리스트의 인덱스
+  const [selectedCartoon, setSelectedCartoon] = useState<Cartoon | null>(null); // 선택된 만화 정보
+  const [isModalOpen, setIsModalOpen] = useState(false); // 만화디테일 모달창 표시 여부
+  const [showNotification, setShowNotification] = useState(false); // 처음화면 돌아가겠냐고 알림창 표시 여부
 
   useEffect(() => {
     const fetchComics = async () => {
@@ -27,7 +35,8 @@ const CartoonRecommendation: React.FC = () => {
         // 사용자 ID 기반으로 만화 정보 불러오기
         if (user && user.id) {
           const comics = await getRecommendedComics(user.id); // 사용자 ID를 기반으로 만화 불러오기
-          console.log(comics);
+          // console.log(comics);
+          // console.log(user);
           setRecommendations(comics);
         }
       } catch (error) {
@@ -39,11 +48,55 @@ const CartoonRecommendation: React.FC = () => {
     fetchComics();
   }, [user]);
 
+  useEffect(() => {
+    console.log("메시지 리스너 설정 시작");
+
+    const setupMessageListener = async () => {
+      try {
+        await listenForMessages(handleMessageReceived);
+        console.log("메시지 리스너가 성공적으로 설정되었습니다.");
+      } catch (error) {
+        console.error("메시지 리스너 설정 중 오류 발생:", error);
+      }
+    };
+
+    setupMessageListener();
+
+    return () => {
+      console.log("메시지 리스너 제거 시작");
+      removeMessageListener();
+      console.log("메시지 리스너가 제거되었습니다.");
+    };
+  }, []); // 빈 의존성 배열을 사용하여 컴포넌트 마운트/언마운트 시에만 실행
+
   const handleCartoonClick = (cartoon: Cartoon) => {
     setselectedLocation(cartoon.location);
     setSelectedCartoon(cartoon);
     setSelectedCartoonId(cartoon.id);
     setIsModalOpen(true);
+  };
+
+  // 만화 선택하여 위치추적하겠다는 메시지 전송 함수
+  const sendMessage = async (content: string) => {
+    try {
+      await saveMessage("kiosk", user.token, content);
+      // console.log(user.token);
+      console.log("앱에서 위치추적 요구 메시지 전송:", content);
+    } catch (error) {
+      console.error("앱에서 위치추적 요구 메시지 전송 실패:", error);
+      throw error;
+    }
+  };
+
+  const handleMessageReceived = async (message: any) => {
+    console.log("만화추천 앱에서 실행 중 메시지 수신: ", message);
+    if (message.content === "kioskskip") {
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+        navigate("/"); // 홈 화면으로 이동
+      }, 3000); // 3초 후 홈 화면으로 이동
+    }
   };
 
   const getActiveTabTitle = () => {
@@ -94,7 +147,20 @@ const CartoonRecommendation: React.FC = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % recommendations.length);
   };
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full relative">
+      {/* 만화추천서비스 앱에서 실행했을경우 */}
+      {showNotification && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg font-bold text-center">
+              만화추천 서비스를 앱에서 실행중입니다.
+              <br />
+              처음화면으로 돌아갑니다.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* 토글 버튼 */}
       <div className="flex justify-center w-full mt-[3vh]">
         <div className="h-[7vh] px-[1vw] py-[1vh] bg-[#f8dd65] rounded-[2.5vw] flex items-center justify-between mb-[1vh] w-4/5">
@@ -265,7 +331,7 @@ const CartoonRecommendation: React.FC = () => {
             </button>
           </>
         ) : (
-          <div className="text-center font-noto">
+          <div className="text-center flex font-noto">
             만화 정보를 불러오는 중입니다...
           </div>
         )}
@@ -275,6 +341,8 @@ const CartoonRecommendation: React.FC = () => {
         cartoon={selectedCartoon}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        activeTab={activeTab}
+        sendMessage={sendMessage}
       />
     </div>
   );

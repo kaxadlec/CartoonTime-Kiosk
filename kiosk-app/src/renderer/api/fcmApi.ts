@@ -44,7 +44,7 @@ export const saveMessage = async (
     // console.log(
     //   `메시지가 성공적으로 저장되었습니다. ID: ${documentReference.id}`
     // );
-    console.log("firebase에 메시지 저장 성공");
+    console.log("최종성공: firebase에 메시지 저장 성공");
   } catch (error) {
     console.error(`메시지 저장 실패: ${(error as Error).message}`);
   }
@@ -57,7 +57,7 @@ export const listenForMessages = (
 
   const q = query(
     collection(firestore, "messages"),
-    where("senderId", "==", "module"),
+    // where("senderId", "==", "module"),
     where("receiverId", "==", "kiosk")
   );
 

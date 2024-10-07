@@ -10,7 +10,7 @@ export const getRecommendedComics = async (
       endpoint: `/ctr/recommend/${userId}`, // 사용자 ID를 경로에 포함
     });
 
-    console.log("response", response);
+    // console.log("response", response);
     // 응답이 배열인지 확인
     if (Array.isArray(response)) {
       const mappedComics: Cartoon[] = response.map((item: any) => ({
