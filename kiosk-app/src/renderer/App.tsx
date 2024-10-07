@@ -12,7 +12,7 @@ import ExitSuccess from "./pages/ExitSuccess";
 import ExitFailure from "./pages/ExitFailure";
 
 // fcmApi 임포트
-import { saveMessage } from "./api/fcmApi"; // fcmApi의 경로를 확인하세요
+import { saveMessage } from "./api/fcmApi";
 
 // 전역 타입 선언 추가
 declare global {

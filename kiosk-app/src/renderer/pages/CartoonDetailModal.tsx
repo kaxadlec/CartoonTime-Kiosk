@@ -7,13 +7,40 @@ interface CartoonDetailModalProps {
   cartoon: Cartoon | null;
   isOpen: boolean;
   onClose: () => void;
+  activeTab: string;
+  sendMessage: (content: string) => Promise<void>;
 }
 
 const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
   cartoon,
   isOpen,
   onClose,
+  activeTab,
+  sendMessage,
 }) => {
+  const handleTrackLocation = async () => {
+    if (cartoon) {
+      let tabIndex = "0";
+      switch (activeTab) {
+        case "bestseller":
+          tabIndex = "1";
+          break;
+        case "today":
+          tabIndex = "2";
+          break;
+        default:
+          tabIndex = "0";
+      }
+      const content = `만화/${tabIndex}/${cartoon.id}`;
+      try {
+        await sendMessage(content);
+        // console.log("위치 추적 메시지 전송 완료:", content);
+      } catch (error) {
+        console.error("위치 추적 메시지 전송 실패:", error);
+      }
+    }
+  };
+
   const [animationClass, setAnimationClass] = useState(
     "translate-y-full opacity-0"
   );
@@ -98,6 +125,13 @@ const CartoonDetailModal: React.FC<CartoonDetailModalProps> = ({
                     <p className="font-bold mb-[1vw]">위치 </p>
                     <p className="text-gray-700 ">{cartoon.location}</p>
                   </div>
+                  {/* 위치 추적 버튼 추가 */}
+                  <button
+                    onClick={handleTrackLocation}
+                    className="bg-[#f9b812] text-white font-bold py-[2vw] px-[4vw] rounded-full text-[3vw] mt-[2vw] hover:bg-[#e0a50f] transition-colors duration-300"
+                  >
+                    만화 위치 추적하기
+                  </button>
                 </div>
               </div>
             </div>

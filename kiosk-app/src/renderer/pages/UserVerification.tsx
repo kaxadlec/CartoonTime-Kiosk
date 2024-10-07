@@ -217,6 +217,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         const entryUserData = {
           id: receivedUserId,
           name: userInfoResponse.data.name,
+          token: userInfoResponse.data.fcmtoken,
         };
         navigate("/enter-success", { state: { user: entryUserData } });
       } else {
