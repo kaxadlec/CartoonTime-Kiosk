@@ -54,6 +54,18 @@ const config: ForgeConfig = {
     //   [FuseV1Options.OnlyLoadAppFromAsar]: true,
     // }),
   ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "kaxadlec",
+          name: "CartoonTimes-KioskApp",
+        },
+        authToken: process.env.GITHUB_TOKEN,
+      },
+    },
+  ],
 };
 
 export default config;

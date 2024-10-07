@@ -69,9 +69,11 @@ const createWindow = () => {
   if (process.env.NODE_ENV === "development") {
     mainWindow.webContents.openDevTools(); // 개발자 도구 열기
     // mainWindow.setMenuBarVisibility(true); // 메뉴 바 숨기기
+    // Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
+    // mainWindow.setFullScreen(true); // 전체 화면으로 설정
   } else {
-    Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
-    mainWindow.webContents.openDevTools(); // 개발자 도구 열기
+    // Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
+    // mainWindow.webContents.openDevTools(); // 개발자 도구 열기
   }
 };
 
