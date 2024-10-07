@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Cartoon } from "../types/cartoon";
 import { getRecommendedComics } from "../api/userComicsGetApi";
+import { getTodayComics } from "../api/todayComicsGetApi";
+import { getAllComics } from "../api/allComicsGetApi";
 import {
   saveMessage,
   listenForMessages,
@@ -23,30 +25,36 @@ const CartoonRecommendation: React.FC = () => {
   const [selectedCartoonId, setSelectedCartoonId] = useState<number | null>(
     null
   );
+  const [selectedCartoonIndex, setSelectedCartoonIndex] = useState<
+    number | null
+  >(null); // 선택된 만화의 인덱스
 
   const [currentIndex, setCurrentIndex] = useState(0); // 현재 보여지는 만화 리스트의 인덱스
   const [selectedCartoon, setSelectedCartoon] = useState<Cartoon | null>(null); // 선택된 만화 정보
   const [isModalOpen, setIsModalOpen] = useState(false); // 만화디테일 모달창 표시 여부
   const [showNotification, setShowNotification] = useState(false); // 처음화면 돌아가겠냐고 알림창 표시 여부
 
+  // activeTab이 변경될 때마다 API 호출
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        // 사용자 ID 기반으로 만화 정보 불러오기
-        if (user && user.id) {
-          const comics = await getRecommendedComics(user.id); // 사용자 ID를 기반으로 만화 불러오기
-          // console.log(comics);
-          // console.log(user);
+        if (activeTab === "user" && user?.id) {
+          const comics = await getRecommendedComics(user.id);
+          setRecommendations(comics);
+        } else if (activeTab === "today") {
+          const comics = await getTodayComics();
+          setRecommendations(comics);
+        } else if (activeTab === "bestseller") {
+          const comics = await getAllComics();
           setRecommendations(comics);
         }
       } catch (error) {
-        console.error("사용자 만화 정보 조회 실패:", error);
-        // 에러 처리 로직 추가
+        console.error("만화 정보 조회 실패:", error);
       }
     };
 
     fetchComics();
-  }, [user]);
+  }, [activeTab, user]);
 
   useEffect(() => {
     console.log("메시지 리스너 설정 시작");
@@ -70,6 +78,10 @@ const CartoonRecommendation: React.FC = () => {
   }, []); // 빈 의존성 배열을 사용하여 컴포넌트 마운트/언마운트 시에만 실행
 
   const handleCartoonClick = (cartoon: Cartoon) => {
+    const cartoonIndex = recommendations.findIndex(
+      (item) => item.id === cartoon.id
+    );
+    setSelectedCartoonIndex(cartoonIndex);
     setselectedLocation(cartoon.location);
     setSelectedCartoon(cartoon);
     setSelectedCartoonId(cartoon.id);
@@ -82,6 +94,7 @@ const CartoonRecommendation: React.FC = () => {
       await saveMessage("kiosk", user.token, content);
       // console.log(user.token);
       console.log("앱에서 위치추적 요구 메시지 전송:", content);
+      navigate("/"); // 메시지 전송 성공 시 홈 화면으로 이동
     } catch (error) {
       console.error("앱에서 위치추적 요구 메시지 전송 실패:", error);
       throw error;
@@ -151,10 +164,11 @@ const CartoonRecommendation: React.FC = () => {
       {/* 만화추천서비스 앱에서 실행했을경우 */}
       {showNotification && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg font-bold text-center">
+          <div className="bg-[#F4F2EE] px-[7vw] py-[5vw] rounded-lg shadow-lg">
+            <p className="text-[3vw] font-bold text-center mb-[4vw]">
               만화추천 서비스를 앱에서 실행중입니다.
-              <br />
+            </p>
+            <p className="text-[3vw] font-bold text-center">
               처음화면으로 돌아갑니다.
             </p>
           </div>
@@ -226,10 +240,11 @@ const CartoonRecommendation: React.FC = () => {
       </div>
 
       {/* 만화위치 섹터 */}
-      <div className="flex flex-col items-center mt-[5vh] -ml-[15vw]">
+      <div className="flex flex-col items-center mt-[7vh] ml-[1vw]">
         <div className="flex justify-center gap-[6vw] mb-[4vh]">
-          {["A", "B", "C"].map((letter) => (
+          {["A", "B", "C"].map((letter, index) => (
             <div key={letter} className="relative w-[4vh] h-[8vh]">
+              {/* 만화 위치 표시 */}
               <div className="absolute inset-0 bg-[#f9b812] border border-black flex justify-center items-center">
                 <div className="text-center text-black text-[2vh] font-bold font-noto">
                   {letter}
@@ -240,6 +255,15 @@ const CartoonRecommendation: React.FC = () => {
                   </div>
                 )}
               </div>
+
+              {/* 키오스크 위치를 A 위치에 상대적으로 배치 */}
+              {letter === "A" && (
+                <div className="absolute -left-[6vh] -top-[5vh] w-[4vh] h-[4vh] bg-gray-500 border border-black flex justify-center items-center">
+                  <div className="text-center text-white text-[1vh] font-bold font-noto">
+                    Kiosk
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -259,15 +283,10 @@ const CartoonRecommendation: React.FC = () => {
             </div>
           ))}
         </div>
-        <div className="absolute right-[20vh] top-[15vh] w-[4vh] h-[4vh] bg-gray-500 border border-black flex justify-center items-center">
-          <div className="text-center text-white text-[1vh] font-bold font-noto">
-            Kiosk
-          </div>
-        </div>
       </div>
 
       {/* 하단제목 */}
-      <div className="justify-center items-center gap-[2vw] flex mt-[7vh]">
+      <div className="justify-center items-center gap-[2vw] flex mt-[5vh]">
         <div className="w-[20vw] h-[0px] border-[0.2vh] border-[#dedbdb]"></div>
         <div className="w-[50vw] text-center text-black text-[4vw] font-bold font-noto tracking-widest">
           {getActiveTabTitle()}
@@ -286,13 +305,15 @@ const CartoonRecommendation: React.FC = () => {
       <div className="relative w-full px-[5vw]">
         {recommendations && recommendations.length > 0 ? (
           <>
-            {/* 좌측 화살표 */}
-            <button
-              onClick={scrollRight}
-              className="absolute left-0 top-1/2 text-[8vw]"
-            >
-              <MdNavigateBefore />
-            </button>
+            {/* 좌측 화살표: 오늘의 추천 만화가 3개 이하일 때 숨기기 */}
+            {!(activeTab === "today" && recommendations.length <= 3) && (
+              <button
+                onClick={scrollLeft}
+                className="absolute left-0 top-1/2 text-[8vw]"
+              >
+                <MdNavigateBefore />
+              </button>
+            )}
 
             <div className="flex justify-center items-center overflow-hidden mt-[4vh] w-full">
               <div className="flex gap-[4vw]" style={{ width: "85vw" }}>
@@ -322,16 +343,18 @@ const CartoonRecommendation: React.FC = () => {
               </div>
             </div>
 
-            {/* 우측 화살표 */}
-            <button
-              onClick={scrollRight}
-              className="absolute right-0 top-1/2 text-[8vw]"
-            >
-              <MdNavigateNext />
-            </button>
+            {/* 우측 화살표: 오늘의 추천 만화가 3개 이하일 때 숨기기 */}
+            {!(activeTab === "today" && recommendations.length <= 3) && (
+              <button
+                onClick={scrollRight}
+                className="absolute right-0 top-1/2 text-[8vw]"
+              >
+                <MdNavigateNext />
+              </button>
+            )}
           </>
         ) : (
-          <div className="text-center flex font-noto">
+          <div className="text-center flex items-center flex-col font-noto mt-[20vw]">
             만화 정보를 불러오는 중입니다...
           </div>
         )}
@@ -343,6 +366,7 @@ const CartoonRecommendation: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         activeTab={activeTab}
         sendMessage={sendMessage}
+        selectedCartoonIndex={selectedCartoonIndex} // 인덱스 전달
       />
     </div>
   );

@@ -43,19 +43,19 @@ const HomeButton: React.FC = () => {
             </div>
             <div className="flex flex-row justify-center items-center gap-[10vh] w-full px-[2vh]">
               <button
-                onClick={handleCancel}
-                className="w-[25%] h-[6vh] bg-[#f9b812] rounded-[1vh] flex justify-center items-center"
-              >
-                <div className="text-center text-white text-[2vh] font-bold font-noto">
-                  아니오
-                </div>
-              </button>
-              <button
                 onClick={handleConfirm}
                 className="w-[25%] h-[6vh] bg-[#f9b812] rounded-[1vh] flex justify-center items-center"
               >
                 <div className="text-center text-white text-[2vh] font-bold font-noto">
                   예
+                </div>
+              </button>
+              <button
+                onClick={handleCancel}
+                className="w-[25%] h-[6vh] bg-[#f9b812] rounded-[1vh] flex justify-center items-center"
+              >
+                <div className="text-center text-white text-[2vh] font-bold font-noto">
+                  아니오
                 </div>
               </button>
             </div>
