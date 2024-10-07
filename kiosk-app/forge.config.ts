@@ -11,10 +11,15 @@ dotenv.config();
 const config: ForgeConfig = {
   packagerConfig: {
     asar: false,
+    icon: "src/renderer/assets/CartoonTimeIcon", // no file extension required
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      setupIcon: "src/renderer/assets/CartoonTimeIcon.ico",
+      iconUrl:
+        "https://github.com/kaxadlec/CartoonTimes-KioskApp/releases/download/v0.0.0/CartoonTimeIcon.ico",
+    }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({}),
     new MakerDeb({}),
@@ -63,6 +68,10 @@ const config: ForgeConfig = {
           name: "CartoonTimes-KioskApp",
         },
         authToken: process.env.GITHUB_TOKEN,
+        draft: true,
+        prerelease: true,
+        iconUrl:
+          "https://github.com/kaxadlec/CartoonTimes-KioskApp/releases/download/v0.0.0/CartoonTimeIcon.ico",
       },
     },
   ],
