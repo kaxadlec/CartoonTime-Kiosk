@@ -33,7 +33,7 @@ const App = () => {
         // 로그인 성공
         const user = userCredential.user;
         setUid(user.uid);
-        console.log("익명으로 로그인되었습니다.");
+        console.log(`${user.uid} 익명으로 로그인되었습니다.`);
       })
       .catch((error) => {
         console.error("익명 로그인 실패:", error);
@@ -42,11 +42,11 @@ const App = () => {
 
   const sendMessage = async (
     userId: number,
-    fcmToken: string,
+    fcmtoken: string,
     content: string
   ) => {
     const senderId = `kiosk`;
-    const receiverId = fcmToken;
+    const receiverId = fcmtoken;
     await saveMessage(senderId, receiverId, content);
   };
 

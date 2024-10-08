@@ -73,7 +73,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
 
   // 임시 입퇴실 버튼 클릭 시
   const handleButtonClick = () => {
-    handleUserVerification(2).catch((error) => {
+    handleUserVerification(3).catch((error) => {
       console.error("User verification failed:", error);
       setError("사용자 확인에 실패했습니다.");
     });

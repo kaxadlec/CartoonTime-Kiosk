@@ -34,6 +34,11 @@ const CartoonRecommendation: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 만화디테일 모달창 표시 여부
   const [showNotification, setShowNotification] = useState(false); // 처음화면 돌아가겠냐고 알림창 표시 여부
 
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(
+    null
+  );
+  const [animating, setAnimating] = useState(false);
+
   // activeTab이 변경될 때마다 API 호출
   useEffect(() => {
     const fetchComics = async () => {
@@ -159,6 +164,7 @@ const CartoonRecommendation: React.FC = () => {
   const scrollRight = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % recommendations.length);
   };
+
   return (
     <div className="flex flex-col h-full w-full relative">
       {/* 만화추천서비스 앱에서 실행했을경우 */}
@@ -309,7 +315,7 @@ const CartoonRecommendation: React.FC = () => {
             {!(activeTab === "today" && recommendations.length <= 3) && (
               <button
                 onClick={scrollLeft}
-                className="absolute left-0 top-1/2 text-[8vw]"
+                className="absolute left-0 top-1/2 text-[8vw] z-10"
               >
                 <MdNavigateBefore />
               </button>
@@ -347,7 +353,7 @@ const CartoonRecommendation: React.FC = () => {
             {!(activeTab === "today" && recommendations.length <= 3) && (
               <button
                 onClick={scrollRight}
-                className="absolute right-0 top-1/2 text-[8vw]"
+                className="absolute right-0 top-1/2 text-[8vw] z-10"
               >
                 <MdNavigateNext />
               </button>
