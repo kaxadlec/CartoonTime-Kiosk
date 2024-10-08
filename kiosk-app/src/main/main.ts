@@ -30,7 +30,7 @@ const createWindow = () => {
 
   // 환경 변수 확인을 위한 로그
   // console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
-  console.log("Main process API_BASE_URL:", API_BASE_URL);
+  // console.log("Main process API_BASE_URL:", API_BASE_URL);
 
   // console.log("MAIN_WINDOW_VITE_NAME", MAIN_WINDOW_VITE_NAME);
   // console.log("__dirname:", __dirname);
