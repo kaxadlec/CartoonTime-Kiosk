@@ -135,9 +135,9 @@ const CartoonRecommendation: React.FC = () => {
       case "user":
         return `${user.name}님의 취향을 바탕으로 추천한 만화 리스트입니다.`;
       case "bestseller":
-        return "현재 가장 인기 있는 만화 리스트입니다.";
+        return "베스트셀러 만화 리스트입니다.";
       case "today":
-        return "오늘의 특별 추천 만화 리스트입니다.";
+        return "오늘의 추천 만화 리스트입니다.";
       default:
         return "";
     }

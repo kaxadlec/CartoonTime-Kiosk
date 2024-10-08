@@ -73,7 +73,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
 
   // 임시 입퇴실 버튼 클릭 시
   const handleButtonClick = () => {
-    handleUserVerification(3).catch((error) => {
+    handleUserVerification(1).catch((error) => {
       console.error("User verification failed:", error);
       setError("사용자 확인에 실패했습니다.");
     });
@@ -338,7 +338,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         </div>
       </div>
       {/* 입퇴실임시버튼 */}
-      <div className="w-full flex justify-center items-center gap-[5vw] mt-[3vh]">
+      {/* <div className="w-full flex justify-center items-center gap-[5vw] mt-[3vh]">
         <button
           onClick={handleButtonClick}
           disabled={isLoading}
@@ -346,7 +346,7 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
         >
           임시 입퇴실 버튼
         </button>
-      </div>
+      </div> */}
       {/* 에러 메시지 표시 */}
       {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
     </div>
