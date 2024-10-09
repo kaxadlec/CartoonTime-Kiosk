@@ -30,7 +30,7 @@ const createWindow = () => {
 
   // 환경 변수 확인을 위한 로그
   // console.log("Main process API_BASE_URL:", process.env.API_BASE_URL);
-  console.log("Main process API_BASE_URL:", API_BASE_URL);
+  // console.log("Main process API_BASE_URL:", API_BASE_URL);
 
   // console.log("MAIN_WINDOW_VITE_NAME", MAIN_WINDOW_VITE_NAME);
   // console.log("__dirname:", __dirname);
@@ -72,7 +72,8 @@ const createWindow = () => {
     // Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
     // mainWindow.setFullScreen(true); // 전체 화면으로 설정
   } else {
-    // Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
+    Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
+    mainWindow.setFullScreen(true); // 전체 화면으로 설정
     // mainWindow.webContents.openDevTools(); // 개발자 도구 열기
   }
 };
