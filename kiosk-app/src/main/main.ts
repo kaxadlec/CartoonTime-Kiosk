@@ -5,11 +5,8 @@ import path from "path";
 import dotenv from "dotenv";
 import axios from "axios";
 import fs from "fs";
-// declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string | undefined;
-// declare const MAIN_WINDOW_VITE_NAME: string;
 
-const API_BASE_URL =
-  process.env.VITE_API_BASE_URL || "https://j11a507.p.ssafy.io";
+const API_BASE_URL = process.env.VITE_API_BASE_URL;
 
 // Windows에서 설치/제거 시 바로가기를 생성/제거하는 것을 처리
 if (require("electron-squirrel-startup")) {
@@ -46,22 +43,10 @@ const createWindow = () => {
   //   // );
   // }
   if (app.isPackaged) {
-    // dotenv.config({ path: path.join(__dirname, "./.env") }); // 패키지 내부에 있는 .env 파일
-    // 프로덕션 모드
-    // mainWindow.loadFile(
-    //   path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    // );
-    // mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`));
     const indexPath = path.join(__dirname, "../renderer/index.html");
     console.log("Loading file from:", indexPath);
     mainWindow.loadFile(indexPath);
-    // console.log("Trying to load:", indexPath);
-    // mainWindow.loadFile(indexPath);
   } else {
-    // console.log(
-    //   "MAIN_WINDOW_VITE_DEV_SERVER_URL",
-    //   MAIN_WINDOW_VITE_DEV_SERVER_URL
-    // );
     // 개발 모드
     mainWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
   }
@@ -69,8 +54,6 @@ const createWindow = () => {
   if (process.env.NODE_ENV === "development") {
     mainWindow.webContents.openDevTools(); // 개발자 도구 열기
     // mainWindow.setMenuBarVisibility(true); // 메뉴 바 숨기기
-    // Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
-    // mainWindow.setFullScreen(true); // 전체 화면으로 설정
   } else {
     Menu.setApplicationMenu(null); // 배포 환경에서는 메뉴 바 제거
     mainWindow.setFullScreen(true); // 전체 화면으로 설정
