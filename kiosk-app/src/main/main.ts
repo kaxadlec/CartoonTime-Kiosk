@@ -6,7 +6,8 @@ import dotenv from "dotenv";
 import axios from "axios";
 import fs from "fs";
 
-const API_BASE_URL = process.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  process.env.VITE_API_BASE_URL || "https://j11a507.p.ssafy.io";
 
 // Windows에서 설치/제거 시 바로가기를 생성/제거하는 것을 처리
 if (require("electron-squirrel-startup")) {
