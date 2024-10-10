@@ -45,6 +45,7 @@ const ExitSuccess: React.FC = () => {
   const location = useLocation();
   const user = location.state?.user;
   const navigate = useNavigate();
+
   const handleClick = () => {
     navigate("/");
   };

@@ -240,10 +240,13 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
             entryDate: result.data.entryDate,
             exitDate: result.data.exitDate,
             fee: result.data.fee,
+            fcmToken: userInfoResponse.data.fcmtoken, // 이 부분을 추가
           };
 
           console.log("퇴실 처리 후 사용자 정보:", exitUserData);
-          navigate("/exit-success", { state: { user: exitUserData } });
+          navigate("/exit-success", {
+            state: { user: exitUserData },
+          });
         } catch (paymentError) {
           console.error("결제 중 오류 발생:", paymentError);
           setError(
