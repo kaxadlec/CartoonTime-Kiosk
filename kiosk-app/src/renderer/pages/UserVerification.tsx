@@ -195,11 +195,11 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
             isCurrentlyCheckedIn = false;
             console.log("퇴실 처리 완료");
             // fcm 메시지 전송 (입퇴실이라는 단어 조건)
-            await sendMessage(
-              receivedUserId,
-              userInfoResponse.data.fcmtoken,
-              "입퇴실"
-            );
+            // await sendMessage(
+            //   receivedUserId,
+            //   userInfoResponse.data.fcmtoken,
+            //   "입퇴실"
+            // );
           } else {
             console.log("예상치 못한 메시지:", result.message);
             throw new Error("예상치 못한 서버 응답");
