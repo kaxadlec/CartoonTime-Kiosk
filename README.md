@@ -12,7 +12,9 @@ Cartoon Time은 전용 키오스크 환경에서 사용자에게 만화책 추�
 
 앱을 처음 시작하는 화면입니다. 사용자는 화면을 터치하여 다음 단계로 이동합니다.
 
-![시작 화면](https://github.com/user-attachments/assets/e577c937-ba06-4bb4-9c24-63987495c4cd)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/e577c937-ba06-4bb4-9c24-63987495c4cd" alt="시작 화면" width="300"/>
+</div>
 
 ---
 
@@ -20,7 +22,9 @@ Cartoon Time은 전용 키오스크 환경에서 사용자에게 만화책 추�
 
 UWB 기반의 기기 근접 인증을 통해 사용자를 식별하고, 입실 및 퇴실 절차를 시작합니다.
 
-![키오스크 인증 화면](https://github.com/user-attachments/assets/8aeabe25-4aff-479f-b665-05fb054b5856)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/8aeabe25-4aff-479f-b665-05fb054b5856" alt="키오스크 인증 화면" width="300"/>
+</div>
 
 ---
 
@@ -28,7 +32,9 @@ UWB 기반의 기기 근접 인증을 통해 사용자를 식별하고, 입실 �
 
 사용자 맞춤형 추천 만화를 불러오는 동안 로딩 상태를 표시합니다.
 
-![만화 추천 로딩 화면](https://github.com/user-attachments/assets/0d19c6c3-2ad5-4575-84df-4834e5576ae1)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/0d19c6c3-2ad5-4575-84df-4834e5576ae1" alt="만화 추천 로딩 화면" width="300"/>
+</div>
 
 ---
 
@@ -36,7 +42,9 @@ UWB 기반의 기기 근접 인증을 통해 사용자를 식별하고, 입실 �
 
 사용자 선호도, 인기 만화, 오늘의 추천 만화와 같은 맞춤형 추천 리스트를 제공합니다.
 
-![만화 추천 화면](https://github.com/user-attachments/assets/0a038b5d-0477-4cfa-a0b6-f5ea1f338427)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/0a038b5d-0477-4cfa-a0b6-f5ea1f338427" alt="만화 추천 화면" width="300"/>
+</div>
 
 ---
 
@@ -44,7 +52,9 @@ UWB 기반의 기기 근접 인증을 통해 사용자를 식별하고, 입실 �
 
 선택한 만화에 대한 상세 정보(작가, 장르, 위치)를 모달로 표시합니다.
 
-![만화 상세 모달](https://github.com/user-attachments/assets/ef49aec6-0d22-4c6c-a270-b826b05a01b4)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/ef49aec6-0d22-4c6c-a270-b826b05a01b4" alt="만화 상세 모달" width="300"/>
+</div>
 
 ---
 
@@ -52,7 +62,9 @@ UWB 기반의 기기 근접 인증을 통해 사용자를 식별하고, 입실 �
 
 선택한 만화의 위치 안내를 요청하기 전에 확인 메시지를 표시합니다. 위치 안내 시 핸드폰 앱에서 확인 가능합니다.
 
-![위치 안내 확인](https://github.com/user-attachments/assets/9bbb8ad7-210d-4c86-8fa3-61b532e87de0)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/9bbb8ad7-210d-4c86-8fa3-61b532e87de0" alt="위치 안내 확인" width="300"/>
+</div>
 
 ---
 
@@ -60,7 +72,9 @@ UWB 기반의 기기 근접 인증을 통해 사용자를 식별하고, 입실 �
 
 사용자의 퇴실 절차를 완료하고 요금과 사용 시간을 표시합니다. 잔액이 부족할 경우 퇴실 실패 메시지를 안내합니다.
 
-![퇴실 화면](https://github.com/user-attachments/assets/bb6ad546-bead-4871-a79b-ae5ab55a174d)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/bb6ad546-bead-4871-a79b-ae5ab55a174d" alt="퇴실 화면" width="300"/>
+</div>
 
 ## 주요 기술적 기능
 
