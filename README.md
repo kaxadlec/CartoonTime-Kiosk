@@ -2,90 +2,125 @@
 
 **Cartoon Time**은 **Electron**과 **React**로 제작된 키오스크 애플리케이션으로, 사용자에게 맞춤형 만화책 추천과 결제, 출입 관리 기능을 제공합니다. Firebase 인증과 FCM(푸시 알림)을 통해 사용자의 접근과 활동을 효율적으로 관리하며, 전용 `Ultra-Wideband(UWB)` 기술을 통해 간편한 인증을 지원합니다.
 
-## Project Overview
+## 개요
 
 Cartoon Time은 전용 키오스크 환경에서 사용자에게 만화책 추천과 위치 안내 기능을 제공하는 애플리케이션입니다. 간단한 터치 인터페이스와 직관적인 UI로 사용자 친화적인 경험을 제공하며, UWB 기술을 활용해 모바일 장치와의 상호작용을 기반으로 빠르고 안전하게 사용자 인증 및 결제를 수행합니다.
 
-<!-- ## Table of Contents
-1. [Project Overview](#project-overview)
-2. [Features](#features)
-3. [Installation and Setup](#installation-and-setup)
-4. [Main Components](#main-components)
-5. [Build and Distribution](#build-and-distribution)
-6. [Folder Structure](#folder-structure)
-7. [Contributing](#contributing)
-8. [License](#license) -->
+## 페이지 및 기능 설명
 
-## Screen
+### 01-시작화면
 
-앱의 주요 화면을 아래에서 확인할 수 있습니다:
+앱을 처음 시작하는 화면입니다. 사용자는 화면을 터치하여 다음 단계로 이동합니다.
 
-### 키오스크 시작 화면
+![시작 화면](https://github.com/user-attachments/assets/e577c937-ba06-4bb4-9c24-63987495c4cd)
 
-![Start Screen](assets/screenshots/start_screen.png)
+---
 
-### 유저 인증
+### 02-키오스크인증
 
-![User Verification](assets/screenshots/user_verification.png)
+UWB 기반의 기기 근접 인증을 통해 사용자를 식별하고, 입실 및 퇴실 절차를 시작합니다.
 
-### 만화 추천
+![키오스크 인증 화면](https://github.com/user-attachments/assets/8aeabe25-4aff-479f-b665-05fb054b5856)
 
-![Cartoon Recommendation](assets/screenshots/cartoon_recommendation.png)
+---
 
-## Features
+### 03-만화추천로딩
 
-- **Firebase 익명 로그인**: Firebase 인증을 이용한 손쉬운 익명 로그인 기능
-- **맞춤형 만화 추천**: 사용자 선호도, 인기 만화, 오늘의 추천 만화를 제공
-- **입출입 관리**: UWB 기술을 통해 사용자의 입실과 퇴실을 기록하고 관리
-- **결제 시스템**: 만화 사용 시간에 따라 요금을 계산하고 결제를 진행
-- **만화 위치 안내**: 만화 위치를 지도로 보여주며, 필요한 경우 안내 메시지 전송
-- **배포 및 업데이트**: GitHub Release와 연동된 Electron Forge로, 지속적인 업데이트와 배포 지원
+사용자 맞춤형 추천 만화를 불러오는 동안 로딩 상태를 표시합니다.
 
-## Application Flow
+![만화 추천 로딩 화면](https://github.com/user-attachments/assets/0d19c6c3-2ad5-4575-84df-4834e5576ae1)
+
+---
+
+### 04-만화추천화면
+
+사용자 선호도, 인기 만화, 오늘의 추천 만화와 같은 맞춤형 추천 리스트를 제공합니다.
+
+![만화 추천 화면](https://github.com/user-attachments/assets/0a038b5d-0477-4cfa-a0b6-f5ea1f338427)
+
+---
+
+### 05-만화상세모달
+
+선택한 만화에 대한 상세 정보(작가, 장르, 위치)를 모달로 표시합니다.
+
+![만화 상세 모달](https://github.com/user-attachments/assets/ef49aec6-0d22-4c6c-a270-b826b05a01b4)
+
+---
+
+### 06-만화위치안내확인
+
+선택한 만화의 위치 안내를 요청하기 전에 확인 메시지를 표시합니다. 위치 안내 시 핸드폰 앱에서 확인 가능합니다.
+
+![위치 안내 확인](https://github.com/user-attachments/assets/9bbb8ad7-210d-4c86-8fa3-61b532e87de0)
+
+---
+
+### 07-퇴실
+
+사용자의 퇴실 절차를 완료하고 요금과 사용 시간을 표시합니다. 잔액이 부족할 경우 퇴실 실패 메시지를 안내합니다.
+
+![퇴실 화면](https://github.com/user-attachments/assets/bb6ad546-bead-4871-a79b-ae5ab55a174d)
+
+## 주요 기술적 기능
+
+- **Firebase 익명 로그인 및 인증**: 사용자가 손쉽게 로그인할 수 있도록 Firebase를 통한 익명 로그인 방식을 채택하였습니다. Firebase에서 반환된 인증 토큰을 이용해 앱 내에서 사용자 세션을 관리하고, 출입 기록을 연동합니다.
+- **UWB 기반 입출입 관리**: Ultra-Wideband(UWB) 기술을 통해 사용자가 키오스크와 근접할 때 자동으로 인증됩니다. BLE(Bluetooth Low Energy)를 활성화하고 파이어베이스와 연동하여 UWB 신호를 통해 출입이 기록됩니다.
+
+- **실시간 데이터 송수신 (IPC)**: Electron의 `ipcRenderer`와 `ipcMain` 모듈을 사용하여 메인 프로세스와 렌더러 프로세스 간의 실시간 데이터 통신을 구현하였습니다. 사용자의 요청을 메인 프로세스에서 처리하고, API 요청, BLE 활성화 등의 작업을 수행하여 필요한 데이터를 전송합니다.
+
+- **사용 시간 및 요금 계산**: 입실 시간과 퇴실 시간에 기반하여 사용 시간을 계산하고, 분당 요금이 부과되도록 구현되었습니다. 이 계산 로직은 백엔드와 연동하여 실시간으로 요금이 자동 계산되며, 잔액 확인 후 퇴실 여부가 결정됩니다.
+
+- **Firebase Cloud Messaging(FCM) 알림 전송**: FCM을 활용하여 만화 위치 안내 및 결제 요청 등 푸시 알림을 전송합니다. 사용자는 만화의 위치를 안내받거나, 퇴실 시 알림을 통해 퇴실 절차를 안내받을 수 있습니다.
+
+- **Electron Forge를 통한 패키징 및 배포 자동화**: `forge.config.ts`에서 설정된 Electron Forge를 통해 앱을 손쉽게 빌드 및 배포할 수 있도록 하였으며, GitHub Release와 연동하여 자동 업데이트가 가능합니다.
+
+## 애플리케이션 흐름도
 
 ```mermaid
 sequenceDiagram
-    participant User as User
-    participant Kiosk as Kiosk App
-    participant Firebase as Firebase
-    participant Server as Backend API
+    participant 사용자 as 사용자
+    participant 키오스크 as Kiosk 앱
+    participant 파이어베이스 as Firebase
+    participant 서버 as 백엔드 API
 
-    User ->> Kiosk: Start App (Start Screen)
-    Kiosk ->> Firebase: Anonymous Login
-    Firebase -->> Kiosk: Auth Token
+    사용자 ->> 키오스크: 01-시작화면 <br>앱 시작 및 터치로 다음 화면 이동
+    키오스크 ->> 파이어베이스: 익명 로그인 요청
+    파이어베이스 -->> 키오스크: 인증 토큰 반환
 
-    User ->> Kiosk: Proceed to User Verification
-    Kiosk ->> Firebase: Send BLE Server On Request
-    Firebase -->> Kiosk: BLE On Confirmation
+    사용자 ->> 키오스크: 02-키오스크인증 <br> 사용자 기기와 근접 인증(UWB)
+    키오스크 ->> 파이어베이스: BLE 서버 켜기 요청
+    파이어베이스 -->> 키오스크: BLE 활성화 확인
 
-    User ->> Kiosk: Device Near (UWB Trigger)
-    Kiosk ->> Server: Request User Info (User ID)
-    Server -->> Kiosk: User Info
+    사용자 ->> 키오스크: 기기 접근 (UWB 트리거)
+    키오스크 ->> 서버: 사용자 정보 요청 (사용자 ID)
+    서버 -->> 키오스크: 사용자 정보 반환
 
-    alt Successful Entry
-        Kiosk ->> Server: Log Entry
-        Server -->> Kiosk: Entry Confirmation
-        Kiosk ->> User: Display EnterSuccess Screen
-        User ->> Kiosk: View Cartoon Recommendations
-        Kiosk ->> Server: Fetch Recommendations
-        Server -->> Kiosk: Recommendation List
-        Kiosk ->> User: Display Recommendations
-    else Insufficient Balance
-        Kiosk ->> User: Display ExitFailure Screen
+    alt 입실 성공
+        키오스크 ->> 서버: 입실 기록 저장
+        서버 -->> 키오스크: 입실 성공 확인
+        키오스크 ->> 사용자: 03-만화추천로딩 <br> 입실 성공 및 맞춤 추천 로딩
+        사용자 ->> 키오스크: 추천 만화 보기 요청
+        키오스크 ->> 서버: 추천 만화 데이터 요청
+        서버 -->> 키오스크: 추천 만화 리스트 반환
+        키오스크 ->> 사용자: 04-만화추천화면 <br> 맞춤형 추천 만화 리스트 표시
+        사용자 ->> 키오스크: 05-만화상세모달 <br> 특정 만화에 대한 상세 정보 요청
+        사용자 ->> 키오스크: 06-만화위치안내확인 <br> 만화 위치 안내 요청
+    else 잔액 부족
+        키오스크 ->> 사용자: 07-퇴실 <br> 잔액 부족으로 퇴실 실패 안내
     end
 
-    User ->> Kiosk: Request Exit
-    Kiosk ->> Server: Calculate Usage Fee
-    Server -->> Kiosk: Fee Amount
+    사용자 ->> 키오스크: 퇴실 요청
+    키오스크 ->> 서버: 사용 요금 계산 요청
+    서버 -->> 키오스크: 요금 금액 반환
 
-    alt Sufficient Balance
-        Kiosk ->> Server: Log Exit and Deduct Fee
-        Server -->> Kiosk: Exit Confirmation
-        Kiosk ->> User: Display ExitSuccess Screen
-    else Insufficient Balance
-        Kiosk ->> User: Display ExitFailure Screen
+    alt 잔액 충분
+        키오스크 ->> 서버: 퇴실 기록 저장 및 요금 차감
+        서버 -->> 키오스크: 퇴실 성공 확인
+        키오스크 ->> 사용자: 07-퇴실 <br> 퇴실 성공 및 사용 시간/요금 정보 표시
+    else 잔액 부족
+        키오스크 ->> 사용자: 07-퇴실 <br> 잔액 부족으로 퇴실 실패 안내
     end
-
 ```
 
 ### 흐름도 설명
@@ -94,5 +129,3 @@ sequenceDiagram
 - **사용자 인증**: 사용자가 기기에 가까이 가면 UWB가 활성화되어 BLE 서버가 켜집니다. 이후 서버에서 사용자 정보를 가져옵니다.
 - **입실 성공**: 입실 성공 시 서버에 로그를 기록하고 추천 만화 리스트를 표시합니다.
 - **퇴실 과정**: 사용자는 퇴실 요청을 하고, 서버에서 요금 계산 후 잔액을 확인합니다. 잔액이 충분하면 요금을 차감하고 퇴실을 확인합니다. 부족하면 퇴실 실패 메시지를 표시합니다.
-
-위 코드를 README에 넣으면 프로젝트의 흐름을 직관적으로 표현할 수 있습니다. Mermaid는 GitHub에서도 지원되므로 README에서 바로 확인 가능합니다.
