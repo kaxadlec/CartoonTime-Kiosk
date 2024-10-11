@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoHomeSharp } from "react-icons/io5";
+import { saveMessage } from "../api/fcmApi"; // fcmApi에서 saveMessage 함수를 import
 
 // 날짜 변환 함수
 const formatDate = (dateString: string) => {
@@ -44,6 +45,7 @@ const ExitSuccess: React.FC = () => {
   const location = useLocation();
   const user = location.state?.user;
   const navigate = useNavigate();
+
   const handleClick = () => {
     navigate("/");
   };
@@ -64,6 +66,22 @@ const ExitSuccess: React.FC = () => {
     // 컴포넌트가 언마운트되면 타이머를 정리
     return () => clearInterval(timer);
   }, [timeLeft, navigate]);
+
+  // 안드로이드 폰에 퇴실 메시지 전송
+  useEffect(() => {
+    const sendExitMessage = async () => {
+      if (user) {
+        try {
+          await saveMessage("kiosk", user.fcmToken, "입퇴실");
+          console.log("퇴실 메시지 전송 완료");
+        } catch (error) {
+          console.error("퇴실 메시지 전송 실패:", error);
+        }
+      }
+    };
+
+    sendExitMessage();
+  }, [user]);
 
   return (
     <div className="flex flex-col justify-center items-center text-center">

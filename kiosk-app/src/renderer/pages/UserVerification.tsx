@@ -195,11 +195,11 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
             isCurrentlyCheckedIn = false;
             console.log("퇴실 처리 완료");
             // fcm 메시지 전송 (입퇴실이라는 단어 조건)
-            await sendMessage(
-              receivedUserId,
-              userInfoResponse.data.fcmtoken,
-              "입퇴실"
-            );
+            // await sendMessage(
+            //   receivedUserId,
+            //   userInfoResponse.data.fcmtoken,
+            //   "입퇴실"
+            // );
           } else {
             console.log("예상치 못한 메시지:", result.message);
             throw new Error("예상치 못한 서버 응답");
@@ -240,10 +240,13 @@ const UserVerification: React.FC<UserVerificationProps> = ({ sendMessage }) => {
             entryDate: result.data.entryDate,
             exitDate: result.data.exitDate,
             fee: result.data.fee,
+            fcmToken: userInfoResponse.data.fcmtoken, // 이 부분을 추가
           };
 
           console.log("퇴실 처리 후 사용자 정보:", exitUserData);
-          navigate("/exit-success", { state: { user: exitUserData } });
+          navigate("/exit-success", {
+            state: { user: exitUserData },
+          });
         } catch (paymentError) {
           console.error("결제 중 오류 발생:", paymentError);
           setError(
