@@ -1,5 +1,7 @@
 # Kiosk App - Cartoon Time
 
+### 릴리스 및 배포 버전: [키오스크 앱](https://github.com/kaxadlec/CartoonTimes-KioskApp) 
+
 **Cartoon Time**은 **Electron**과 **React**로 제작된 키오스크 애플리케이션으로, 사용자에게 맞춤형 만화책 추천과 결제, 출입 관리 기능을 제공합니다. Firebase 인증과 FCM(푸시 알림)을 통해 사용자의 접근과 활동을 효율적으로 관리하며, 전용 `Ultra-Wideband(UWB)` 기술을 통해 간편한 인증을 지원합니다.
 
 ## 개요
